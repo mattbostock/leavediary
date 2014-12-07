@@ -14,7 +14,7 @@ func main() {
 
 func Run() {
 	m := http.DefaultServeMux
-	n := negroni.New(negroni.NewRecovery())
+	n := negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
 	l := negronilogrus.NewMiddleware()
 	r := render.New(render.Options{
 		Layout: "layout",
