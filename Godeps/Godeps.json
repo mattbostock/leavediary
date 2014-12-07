@@ -1,0 +1,33 @@
+{
+	"ImportPath": "gitlab.com/mattbostock/timeoff",
+	"GoVersion": "go1.3.3",
+	"Deps": [
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.6.1-12-g0ae5377",
+			"Rev": "0ae53775f7736dbe9bbccbedb3c408f13ce5282e"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/negroni",
+			"Comment": "v0.1-51-g2b6e86b",
+			"Rev": "2b6e86bff68451fcd38bd9e2da90e0b70e85983d"
+		},
+		{
+			"ImportPath": "github.com/meatballhat/negroni-logrus",
+			"Rev": "d5e114d7a445f7a3652cf807d3f83d5dceb8de26"
+		},
+		{
+			"ImportPath": "github.com/sclevine/agouti/core",
+			"Comment": "v1-latest-5-ge6878e4",
+			"Rev": "e6878e45ce21e9bbadf84480e6eb33d2f0113dce"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/assert",
+			"Rev": "1297dc01ed0a819ff634c89707081a4df43baf6b"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/suite",
+			"Rev": "1297dc01ed0a819ff634c89707081a4df43baf6b"
+		}
+	]
+}
