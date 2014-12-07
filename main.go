@@ -4,6 +4,7 @@ import (
 	_ "expvar"
 	"fmt"
 	"github.com/codegangsta/negroni"
+	"github.com/meatballhat/negroni-logrus"
 	"net/http"
 )
 
@@ -18,7 +19,13 @@ func Run() {
 		fmt.Fprintf(w, "Welcome to the home page!")
 	})
 
-	n := negroni.Classic()
+	n := negroni.New(negroni.NewRecovery())
+	l := negronilogrus.NewMiddleware()
+
+	n.Use(l)
 	n.UseHandler(m)
-	n.Run(":3000")
+
+	addr := ":3000"
+	l.Logger.Infof("Listening on %s", addr)
+	l.Logger.Fatal(http.ListenAndServe(addr, n))
 }
