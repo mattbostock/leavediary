@@ -28,6 +28,10 @@
 		{
 			"ImportPath": "github.com/stretchr/testify/suite",
 			"Rev": "1297dc01ed0a819ff634c89707081a4df43baf6b"
+		},
+		{
+			"ImportPath": "github.com/unrolled/render",
+			"Rev": "4796b5bc747483bf9b20a50b2c80e00ed2c85fab"
 		}
 	]
 }

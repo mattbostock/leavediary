@@ -2,9 +2,9 @@ package main
 
 import (
 	_ "expvar"
-	"fmt"
 	"github.com/codegangsta/negroni"
 	"github.com/meatballhat/negroni-logrus"
+	"github.com/unrolled/render"
 	"net/http"
 )
 
@@ -14,16 +14,18 @@ func main() {
 
 func Run() {
 	m := http.DefaultServeMux
-
-	m.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(w, "Welcome to the home page!")
-	})
-
 	n := negroni.New(negroni.NewRecovery())
 	l := negronilogrus.NewMiddleware()
+	r := render.New(render.Options{
+		Layout: "layout",
+	})
 
 	n.Use(l)
 	n.UseHandler(m)
+
+	m.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		r.HTML(w, http.StatusOK, "index", "world")
+	})
 
 	addr := ":3000"
 	l.Logger.Infof("Listening on %s", addr)
