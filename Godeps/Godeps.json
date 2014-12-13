@@ -18,8 +18,8 @@
 		},
 		{
 			"ImportPath": "github.com/sclevine/agouti/core",
-			"Comment": "v1-latest-5-ge6878e4",
-			"Rev": "e6878e45ce21e9bbadf84480e6eb33d2f0113dce"
+			"Comment": "v1-latest-6-g8c0b6a4",
+			"Rev": "8c0b6a4b6f9012c8ecc9d11efc8b3813a6d1f3a8"
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",

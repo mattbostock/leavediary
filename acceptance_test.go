@@ -46,3 +46,13 @@ func (s *acceptanceTestSuite) TestDebugVarsExposed() {
 	assert.Contains(s.T(), bodyText, "cmdline")
 	assert.Contains(s.T(), bodyText, "memstats")
 }
+
+func (s *acceptanceTestSuite) TestHomePageForJavascriptErrors() {
+	_ = s.page.Navigate("http://localhost:3000/")
+	logs, _ := s.page.ReadLogs("browser", true)
+
+	for _, log := range logs {
+		assert.NotEqual(s.T(), log.Level, "WARNING", log.Message)
+		assert.NotEqual(s.T(), log.Level, "SEVERE", log.Message)
+	}
+}
