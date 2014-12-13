@@ -2,11 +2,12 @@ package main
 
 import (
 	_ "expvar"
+	"net/http"
+	"os"
+
 	"github.com/codegangsta/negroni"
 	"github.com/meatballhat/negroni-logrus"
 	"github.com/unrolled/render"
-	"net/http"
-	"os"
 )
 
 func main() {
