@@ -6,6 +6,7 @@ import (
 	"github.com/meatballhat/negroni-logrus"
 	"github.com/unrolled/render"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -27,7 +28,13 @@ func Run() {
 		r.HTML(w, http.StatusOK, "index", "world")
 	})
 
-	addr := ":3000"
+	var addr string
+	if len(os.Getenv("PORT")) > 0 {
+		addr = ":" + os.Getenv("PORT")
+	} else {
+		addr = ":3000"
+	}
+
 	l.Logger.Infof("Listening on %s", addr)
 	l.Logger.Fatal(http.ListenAndServe(addr, n))
 }
