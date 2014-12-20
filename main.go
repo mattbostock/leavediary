@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/bmizerany/pat"
 	"github.com/codegangsta/negroni"
 	"github.com/meatballhat/negroni-logrus"
 	"github.com/unrolled/render"
@@ -15,7 +16,7 @@ func main() {
 }
 
 func Run() {
-	m := http.DefaultServeMux
+	m := pat.New()
 	n := negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
 	l := negronilogrus.NewMiddleware()
 	r := render.New(render.Options{
@@ -25,9 +26,11 @@ func Run() {
 	n.Use(l)
 	n.UseHandler(m)
 
-	m.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+	m.Get("/debug/vars", http.DefaultServeMux)
+
+	m.Get("/", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		r.HTML(w, http.StatusOK, "index", "world")
-	})
+	}))
 
 	var addr string
 	if len(os.Getenv("PORT")) > 0 {

@@ -8,6 +8,10 @@
 			"Rev": "0ae53775f7736dbe9bbccbedb3c408f13ce5282e"
 		},
 		{
+			"ImportPath": "github.com/bmizerany/pat",
+			"Rev": "b8a35001b773c267eb260a691f4e5499a3531600"
+		},
+		{
 			"ImportPath": "github.com/codegangsta/negroni",
 			"Comment": "v0.1-51-g2b6e86b",
 			"Rev": "2b6e86bff68451fcd38bd9e2da90e0b70e85983d"
