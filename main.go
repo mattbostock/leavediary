@@ -19,7 +19,7 @@ func Run() {
 	m := pat.New()
 	n := negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
 	l := negronilogrus.NewMiddleware()
-	r := render.New(render.Options{
+	o := render.New(render.Options{
 		Layout: "layout",
 	})
 
@@ -29,7 +29,7 @@ func Run() {
 	m.Get("/debug/vars", http.DefaultServeMux)
 
 	m.Get("/", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		r.HTML(w, http.StatusOK, "index", "world")
+		o.HTML(w, http.StatusOK, "index", "world")
 	}))
 
 	var addr string
