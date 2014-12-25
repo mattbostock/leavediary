@@ -1,11 +1,11 @@
-package main_test
+package main
 
 import (
-	main "."
+	"testing"
+
 	agouti "github.com/sclevine/agouti/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"testing"
 )
 
 type acceptanceTestSuite struct {
@@ -32,7 +32,7 @@ func (s *acceptanceTestSuite) SetupSuite() {
 		s.T().Error(err)
 	}
 
-	go main.Run()
+	go main()
 }
 
 func (s *acceptanceTestSuite) TearDownSuite() {

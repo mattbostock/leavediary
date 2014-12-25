@@ -12,10 +12,6 @@ import (
 )
 
 func main() {
-	Run()
-}
-
-func Run() {
 	m := pat.New()
 	n := negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
 	l := negronilogrus.NewMiddleware()
