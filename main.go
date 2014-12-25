@@ -28,7 +28,7 @@ func Run() {
 
 	m.Get("/debug/vars", http.DefaultServeMux)
 
-	m.Get("/", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+	m.Get("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		o.HTML(w, http.StatusOK, "index", "world")
 	}))
 
