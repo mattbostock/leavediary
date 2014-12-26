@@ -37,5 +37,14 @@ func main() {
 	}
 
 	l.Logger.Infof("Listening on %s", addr)
-	l.Logger.Fatal(http.ListenAndServe(addr, n))
+	if os.Getenv("TIMEOFF_TLS_CERT") == "" && os.Getenv("TIMEOFF_TLS_KEY") == "" {
+		l.Logger.Warningln(noTLSCertificateError)
+		l.Logger.Fatal(http.ListenAndServe(addr, n))
+	} else {
+		l.Logger.Infoln("Listening with TLS")
+		l.Logger.Fatal(http.ListenAndServeTLS(addr, os.Getenv("TIMEOFF_TLS_CERT"), os.Getenv("TIMEOFF_TLS_KEY"), n))
+	}
 }
+
+const noTLSCertificateError = "No TLS certficiate supplied. Consider setting TIMEOFF_TLS_CERT " +
+	"and TIMEOFF_TLS_KEY environment variables to enable TLS."
