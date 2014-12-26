@@ -30,10 +30,10 @@ func main() {
 
 	var addr string
 
-	if len(os.Getenv("TIMEOFF_ADDR")) > 0 {
-		addr = os.Getenv("TIMEOFF_ADDR")
-	} else {
+	if os.Getenv("TIMEOFF_ADDR") == "" {
 		addr = ":3000"
+	} else {
+		addr = os.Getenv("TIMEOFF_ADDR")
 	}
 
 	l.Logger.Infof("Listening on %s", addr)
