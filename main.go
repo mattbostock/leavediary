@@ -11,11 +11,19 @@ import (
 	"github.com/unrolled/render"
 )
 
-func main() {
-	m := pat.New()
-	n := negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
-	l := negronilogrus.NewMiddleware()
-	o := render.New(render.Options{
+var (
+	addr string
+	m    *pat.PatternServeMux
+	n    *negroni.Negroni
+	l    *negronilogrus.Middleware
+	o    *render.Render
+)
+
+func init() {
+	m = pat.New()
+	n = negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
+	l = negronilogrus.NewMiddleware()
+	o = render.New(render.Options{
 		Layout: "layout",
 	})
 
@@ -28,14 +36,14 @@ func main() {
 		o.HTML(w, http.StatusOK, "index", "world")
 	}))
 
-	var addr string
-
 	if os.Getenv("TIMEOFF_ADDR") == "" {
 		addr = ":3000"
 	} else {
 		addr = os.Getenv("TIMEOFF_ADDR")
 	}
+}
 
+func main() {
 	l.Logger.Infof("Listening on %s", addr)
 	if os.Getenv("TIMEOFF_TLS_CERT") == "" && os.Getenv("TIMEOFF_TLS_KEY") == "" {
 		l.Logger.Warningln(noTLSCertificateError)
