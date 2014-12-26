@@ -29,8 +29,9 @@ func main() {
 	}))
 
 	var addr string
-	if len(os.Getenv("TIMEOFF_PORT")) > 0 {
-		addr = ":" + os.Getenv("TIMEOFF_PORT")
+
+	if len(os.Getenv("TIMEOFF_ADDR")) > 0 {
+		addr = os.Getenv("TIMEOFF_ADDR")
 	} else {
 		addr = ":3000"
 	}
