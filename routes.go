@@ -1,11 +1,7 @@
 package main
 
-import (
-	"net/http"
-
-	"gitlab.com/mattbostock/timeoff/handler"
-)
+import "gitlab.com/mattbostock/timeoff/handler"
 
 func init() {
-	m.Get("/", http.HandlerFunc(handler.Index))
+	m.Get("/", handler.Index)
 }

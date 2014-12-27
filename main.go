@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/bmizerany/pat"
 	"github.com/codegangsta/negroni"
+	"github.com/gorilla/pat"
 	"github.com/meatballhat/negroni-logrus"
 )
 
@@ -21,7 +21,7 @@ func init() {
 	n.Use(l)
 	n.UseHandler(m)
 
-	m.Get("/debug/vars", http.DefaultServeMux)
+	m.Add("GET", "/debug/vars", http.DefaultServeMux)
 
 	if addr == "" {
 		addr = ":3000"
