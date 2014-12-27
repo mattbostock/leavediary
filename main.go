@@ -12,21 +12,16 @@ import (
 )
 
 var (
-	addr string
-	m    *pat.PatternServeMux
-	n    *negroni.Negroni
-	l    *negronilogrus.Middleware
-	o    *render.Render
+	addr = os.Getenv("TIMEOFF_ADDR")
+	m    = pat.New()
+	n    = negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
+	l    = negronilogrus.NewMiddleware()
+       o    = render.New(render.Options{
+                      Layout: "layout",
+              })
 )
 
 func init() {
-	m = pat.New()
-	n = negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
-	l = negronilogrus.NewMiddleware()
-	o = render.New(render.Options{
-		Layout: "layout",
-	})
-
 	n.Use(l)
 	n.UseHandler(m)
 
@@ -36,10 +31,8 @@ func init() {
 		o.HTML(w, http.StatusOK, "index", "world")
 	}))
 
-	if os.Getenv("TIMEOFF_ADDR") == "" {
+	if addr == "" {
 		addr = ":3000"
-	} else {
-		addr = os.Getenv("TIMEOFF_ADDR")
 	}
 }
 
