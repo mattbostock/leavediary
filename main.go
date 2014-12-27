@@ -29,13 +29,17 @@ func init() {
 }
 
 func main() {
+	tlsCert := os.Getenv("TIMEOFF_TLS_CERT")
+	tlsKey := os.Getenv("TIMEOFF_TLS_KEY")
+
 	l.Logger.Infof("Listening on %s", addr)
-	if os.Getenv("TIMEOFF_TLS_CERT") == "" && os.Getenv("TIMEOFF_TLS_KEY") == "" {
+
+	if tlsCert == "" && tlsKey == "" {
 		l.Logger.Warningln(noTLSCertificateError)
 		l.Logger.Fatal(http.ListenAndServe(addr, n))
 	} else {
 		l.Logger.Infoln("Listening with TLS")
-		l.Logger.Fatal(http.ListenAndServeTLS(addr, os.Getenv("TIMEOFF_TLS_CERT"), os.Getenv("TIMEOFF_TLS_KEY"), n))
+		l.Logger.Fatal(http.ListenAndServeTLS(addr, tlsCert, tlsKey, n))
 	}
 }
 
