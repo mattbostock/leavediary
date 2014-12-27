@@ -8,7 +8,6 @@ import (
 	"github.com/bmizerany/pat"
 	"github.com/codegangsta/negroni"
 	"github.com/meatballhat/negroni-logrus"
-	"github.com/unrolled/render"
 )
 
 var (
@@ -16,9 +15,6 @@ var (
 	m    = pat.New()
 	n    = negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
 	l    = negronilogrus.NewMiddleware()
-       o    = render.New(render.Options{
-                      Layout: "layout",
-              })
 )
 
 func init() {
@@ -26,10 +22,6 @@ func init() {
 	n.UseHandler(m)
 
 	m.Get("/debug/vars", http.DefaultServeMux)
-
-	m.Get("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		o.HTML(w, http.StatusOK, "index", "world")
-	}))
 
 	if addr == "" {
 		addr = ":3000"
