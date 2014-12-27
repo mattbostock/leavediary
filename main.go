@@ -8,6 +8,7 @@ import (
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/pat"
 	"github.com/meatballhat/negroni-logrus"
+	"gitlab.com/mattbostock/timeoff/handler"
 )
 
 var (
@@ -20,6 +21,7 @@ var (
 func init() {
 	n.Use(l)
 	n.UseHandler(m)
+	handler.SetLogger(l.Logger)
 
 	m.Add("GET", "/debug/vars", http.DefaultServeMux)
 

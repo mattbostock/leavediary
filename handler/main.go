@@ -1,7 +1,17 @@
 package handler
 
-import "github.com/unrolled/render"
+import (
+	"github.com/Sirupsen/logrus"
+	"github.com/unrolled/render"
+)
 
-var o = render.New(render.Options{
-	Layout: "layout",
-})
+var (
+	l *logrus.Logger
+	o = render.New(render.Options{
+		Layout: "layout",
+	})
+)
+
+func SetLogger(logger *logrus.Logger) {
+	l = logger
+}
