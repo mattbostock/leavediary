@@ -29,6 +29,10 @@
 			"Rev": "d5e114d7a445f7a3652cf807d3f83d5dceb8de26"
 		},
 		{
+			"ImportPath": "github.com/phyber/negroni-gzip/gzip",
+			"Rev": "48f82605778a579cb8172122897f589e4023b537"
+		},
+		{
 			"ImportPath": "github.com/sclevine/agouti/core",
 			"Comment": "v1-latest-6-g8c0b6a4",
 			"Rev": "8c0b6a4b6f9012c8ecc9d11efc8b3813a6d1f3a8"

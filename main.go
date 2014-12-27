@@ -8,6 +8,7 @@ import (
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/pat"
 	"github.com/meatballhat/negroni-logrus"
+	"github.com/phyber/negroni-gzip/gzip"
 	"gitlab.com/mattbostock/timeoff/handler"
 )
 
@@ -19,6 +20,7 @@ var (
 )
 
 func init() {
+	n.Use(gzip.Gzip(gzip.BestCompression))
 	n.Use(l)
 	n.UseHandler(m)
 	handler.SetLogger(l.Logger)
