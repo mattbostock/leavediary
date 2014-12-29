@@ -11,6 +11,8 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+const baseURL = "http://localhost:3000"
+
 type acceptanceTestSuite struct {
 	suite.Suite
 	driver agouti.WebDriver
@@ -43,7 +45,7 @@ func (s *acceptanceTestSuite) TearDownSuite() {
 }
 
 func (s *acceptanceTestSuite) TestDebugVarsExposed() {
-	_ = s.page.Navigate("http://localhost:3000/debug/vars")
+	_ = s.page.Navigate(baseURL + "/debug/vars")
 	bodyText, _ := s.page.Find("body").Text()
 
 	assert.Contains(s.T(), bodyText, "cmdline")
@@ -51,7 +53,7 @@ func (s *acceptanceTestSuite) TestDebugVarsExposed() {
 }
 
 func (s *acceptanceTestSuite) TestHomePageForJavascriptErrors() {
-	_ = s.page.Navigate("http://localhost:3000/")
+	_ = s.page.Navigate(baseURL)
 	logs, _ := s.page.ReadLogs("browser", true)
 
 	for _, log := range logs {
@@ -62,7 +64,7 @@ func (s *acceptanceTestSuite) TestHomePageForJavascriptErrors() {
 
 func (s *acceptanceTestSuite) TestGZIPEnabledWhenSupported() {
 	for _, encoding := range []string{"", "gzip"} {
-		req, _ := http.NewRequest("GET", "http://localhost:3000", nil)
+		req, _ := http.NewRequest("GET", baseURL, nil)
 		req.Header.Add("Accept-Encoding", encoding)
 
 		resp, _ := http.DefaultTransport.RoundTrip(req)
