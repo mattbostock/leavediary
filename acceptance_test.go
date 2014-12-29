@@ -2,6 +2,7 @@ package main
 
 import (
 	"compress/gzip"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"testing"
@@ -64,6 +65,7 @@ func (s *acceptanceTestSuite) TestHomePageForJavascriptErrors() {
 
 func (s *acceptanceTestSuite) TestGZIPEnabledWhenSupported() {
 	var body []byte
+	var bodyReader io.Reader
 
 	for _, encoding := range []string{"", "gzip"} {
 		req, _ := http.NewRequest("GET", baseURL, nil)
@@ -75,10 +77,12 @@ func (s *acceptanceTestSuite) TestGZIPEnabledWhenSupported() {
 		if encoding == "gzip" {
 			gzBody, _ := gzip.NewReader(resp.Body)
 			defer gzBody.Close()
-			body, _ = ioutil.ReadAll(gzBody)
+			bodyReader = gzBody
 		} else {
-			body, _ = ioutil.ReadAll(resp.Body)
+			bodyReader = resp.Body
 		}
+
+		body, _ = ioutil.ReadAll(bodyReader)
 
 		assert.Equal(s.T(), resp.Header.Get("Content-Encoding"), encoding)
 		assert.Contains(s.T(), string(body), "TimeOff")
