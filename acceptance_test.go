@@ -63,14 +63,14 @@ func (s *acceptanceTestSuite) TestHomePageForJavascriptErrors() {
 }
 
 func (s *acceptanceTestSuite) TestGZIPEnabledWhenSupported() {
+	var body []byte
+
 	for _, encoding := range []string{"", "gzip"} {
 		req, _ := http.NewRequest("GET", baseURL, nil)
 		req.Header.Add("Accept-Encoding", encoding)
 
 		resp, _ := http.DefaultTransport.RoundTrip(req)
 		defer resp.Body.Close()
-
-		var body []byte
 
 		if encoding == "gzip" {
 			gzBody, _ := gzip.NewReader(resp.Body)
