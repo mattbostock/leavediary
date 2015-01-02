@@ -14,10 +14,13 @@ import (
 )
 
 var (
-	addr = os.Getenv("ADDR")
-	m    = pat.New()
-	n    = negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
-	l    = negronilogrus.NewMiddleware()
+	addr    = os.Getenv("ADDR")
+	debug   = len(os.Getenv("DEBUG")) > 0
+	m       = pat.New()
+	n       = negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
+	l       = negronilogrus.NewMiddleware()
+	tlsCert = os.Getenv("TLS_CERT")
+	tlsKey  = os.Getenv("TLS_KEY")
 )
 
 func init() {
@@ -26,7 +29,7 @@ func init() {
 	n.UseHandler(m)
 	handler.SetLogger(l.Logger)
 
-	if len(os.Getenv("DEBUG")) > 0 {
+	if debug {
 		l.Logger.Level = logrus.DebugLevel
 	}
 
@@ -38,9 +41,6 @@ func init() {
 }
 
 func main() {
-	tlsCert := os.Getenv("TLS_CERT")
-	tlsKey := os.Getenv("TLS_KEY")
-
 	l.Logger.Infof("Listening on %s", addr)
 
 	if tlsCert == "" && tlsKey == "" {
