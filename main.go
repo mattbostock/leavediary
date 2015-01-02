@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/pat"
 	"github.com/meatballhat/negroni-logrus"
@@ -24,6 +25,10 @@ func init() {
 	n.Use(l)
 	n.UseHandler(m)
 	handler.SetLogger(l.Logger)
+
+	if len(os.Getenv("TIMEOFF_DEBUG")) > 0 {
+		l.Logger.Level = logrus.DebugLevel
+	}
 
 	m.Add("GET", "/debug/vars", http.DefaultServeMux)
 
