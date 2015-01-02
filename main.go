@@ -33,14 +33,15 @@ var (
 	mux        = pat.New()
 	n          = negroni.New()
 	logHandler = negronilogrus.NewMiddleware()
+	log        = logHandler.Logger
 )
 
 func init() {
 	// configure logging
 	n.Use(logHandler)
-	handler.SetLogger(logHandler.Logger)
+	handler.SetLogger(log)
 	if config.debug {
-		logHandler.Logger.Level = logrus.DebugLevel
+		log.Level = logrus.DebugLevel
 	}
 
 	n.Use(negroni.NewRecovery())
@@ -56,14 +57,14 @@ func init() {
 }
 
 func main() {
-	logHandler.Logger.Infof("Listening on %s", config.addr)
+	log.Infof("Listening on %s", config.addr)
 
 	if config.tlsCert == "" && config.tlsKey == "" {
-		logHandler.Logger.Warningln(noTLSCertificateError)
-		logHandler.Logger.Fatal(http.ListenAndServe(config.addr, n))
+		log.Warningln(noTLSCertificateError)
+		log.Fatal(http.ListenAndServe(config.addr, n))
 	} else {
-		logHandler.Logger.Infoln("Listening with TLS")
-		logHandler.Logger.Fatal(http.ListenAndServeTLS(config.addr, config.tlsCert, config.tlsKey, n))
+		log.Infoln("Listening with TLS")
+		log.Fatal(http.ListenAndServeTLS(config.addr, config.tlsCert, config.tlsKey, n))
 	}
 }
 
