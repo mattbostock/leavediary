@@ -31,14 +31,15 @@ var (
 )
 
 func init() {
-	n.Use(gzip.Gzip(gzip.BestCompression))
+	// configure logging
 	n.Use(l)
-	n.UseHandler(m)
 	handler.SetLogger(l.Logger)
-
 	if config.debug {
 		l.Logger.Level = logrus.DebugLevel
 	}
+
+	n.Use(gzip.Gzip(gzip.BestCompression))
+	n.UseHandler(m)
 
 	m.Add("GET", "/debug/vars", http.DefaultServeMux)
 
