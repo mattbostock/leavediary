@@ -2,6 +2,6 @@ package main
 
 import "gitlab.com/mattbostock/timeoff/handler"
 
-func init() {
+func registerRoutes() {
 	mux.Get("/", handler.Index)
 }

@@ -31,32 +31,33 @@ var (
 		tlsKey:  os.Getenv("TLS_KEY"),
 	}
 	mux        = pat.New()
-	n          = negroni.New()
 	logHandler = negronilogrus.NewMiddleware()
 	log        = logHandler.Logger
 )
 
 func init() {
-	// configure logging
-	n.Use(logHandler)
-	handler.SetLogger(log)
+	if config.addr == "" {
+		config.addr = defaultAddr
+	}
+
 	if config.debug {
 		log.Level = logrus.DebugLevel
 	}
 
-	n.Use(negroni.NewRecovery())
-	n.Use(negroni.NewStatic(http.Dir(assetsPath)))
-	n.Use(gzip.Gzip(gzip.BestCompression))
-	n.UseHandler(mux)
-
-	mux.Add("GET", "/debug/vars", http.DefaultServeMux)
-
-	if config.addr == "" {
-		config.addr = defaultAddr
-	}
+	handler.SetLogger(log)
 }
 
 func main() {
+	n := negroni.New()
+	n.Use(logHandler) // logger must be first middleware
+	n.Use(negroni.NewRecovery())
+	n.Use(negroni.NewStatic(http.Dir(assetsPath)))
+	n.Use(gzip.Gzip(gzip.BestCompression))
+
+	n.UseHandler(mux)
+	mux.Add("GET", "/debug/vars", http.DefaultServeMux)
+	registerRoutes()
+
 	log.Infof("Listening on %s", config.addr)
 
 	if config.tlsCert == "" && config.tlsKey == "" {
