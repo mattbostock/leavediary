@@ -25,7 +25,7 @@ var (
 		tlsCert: os.Getenv("TLS_CERT"),
 		tlsKey:  os.Getenv("TLS_KEY"),
 	}
-	m          = pat.New()
+	mux        = pat.New()
 	n          = negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
 	logHandler = negronilogrus.NewMiddleware()
 )
@@ -39,9 +39,9 @@ func init() {
 	}
 
 	n.Use(gzip.Gzip(gzip.BestCompression))
-	n.UseHandler(m)
+	n.UseHandler(mux)
 
-	m.Add("GET", "/debug/vars", http.DefaultServeMux)
+	mux.Add("GET", "/debug/vars", http.DefaultServeMux)
 
 	if config.addr == "" {
 		config.addr = ":3000"
