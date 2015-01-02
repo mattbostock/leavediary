@@ -13,7 +13,10 @@ import (
 	"gitlab.com/mattbostock/timeoff/handler"
 )
 
-const assetsPath = "assets"
+const (
+	assetsPath  = "assets"
+	defaultAddr = ":3000"
+)
 
 var (
 	config = &struct {
@@ -48,7 +51,7 @@ func init() {
 	mux.Add("GET", "/debug/vars", http.DefaultServeMux)
 
 	if config.addr == "" {
-		config.addr = ":3000"
+		config.addr = defaultAddr
 	}
 }
 
