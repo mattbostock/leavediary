@@ -14,13 +14,20 @@ import (
 )
 
 var (
-	addr    = os.Getenv("ADDR")
-	debug   = len(os.Getenv("DEBUG")) > 0
-	m       = pat.New()
-	n       = negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
-	l       = negronilogrus.NewMiddleware()
-	tlsCert = os.Getenv("TLS_CERT")
-	tlsKey  = os.Getenv("TLS_KEY")
+	config = &struct {
+		addr    string
+		debug   bool
+		tlsCert string
+		tlsKey  string
+	}{
+		addr:    os.Getenv("ADDR"),
+		debug:   len(os.Getenv("DEBUG")) > 0,
+		tlsCert: os.Getenv("TLS_CERT"),
+		tlsKey:  os.Getenv("TLS_KEY"),
+	}
+	m = pat.New()
+	n = negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
+	l = negronilogrus.NewMiddleware()
 )
 
 func init() {
@@ -29,26 +36,26 @@ func init() {
 	n.UseHandler(m)
 	handler.SetLogger(l.Logger)
 
-	if debug {
+	if config.debug {
 		l.Logger.Level = logrus.DebugLevel
 	}
 
 	m.Add("GET", "/debug/vars", http.DefaultServeMux)
 
-	if addr == "" {
-		addr = ":3000"
+	if config.addr == "" {
+		config.addr = ":3000"
 	}
 }
 
 func main() {
-	l.Logger.Infof("Listening on %s", addr)
+	l.Logger.Infof("Listening on %s", config.addr)
 
-	if tlsCert == "" && tlsKey == "" {
+	if config.tlsCert == "" && config.tlsKey == "" {
 		l.Logger.Warningln(noTLSCertificateError)
-		l.Logger.Fatal(http.ListenAndServe(addr, n))
+		l.Logger.Fatal(http.ListenAndServe(config.addr, n))
 	} else {
 		l.Logger.Infoln("Listening with TLS")
-		l.Logger.Fatal(http.ListenAndServeTLS(addr, tlsCert, tlsKey, n))
+		l.Logger.Fatal(http.ListenAndServeTLS(config.addr, config.tlsCert, config.tlsKey, n))
 	}
 }
 
