@@ -1,7 +1,6 @@
 package main
 
 import (
-	_ "expvar"
 	"net/http"
 	"os"
 
@@ -55,7 +54,6 @@ func main() {
 	n.Use(gzip.Gzip(gzip.BestCompression))
 
 	n.UseHandler(mux)
-	mux.Add("GET", "/debug/vars", http.DefaultServeMux)
 	registerRoutes()
 
 	log.Infof("Listening on %s", config.addr)
