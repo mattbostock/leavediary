@@ -29,6 +29,7 @@ var (
 		tlsCert: os.Getenv("TLS_CERT"),
 		tlsKey:  os.Getenv("TLS_KEY"),
 	}
+
 	mux        = pat.New()
 	logHandler = negronilogrus.NewMiddleware()
 	log        = logHandler.Logger
