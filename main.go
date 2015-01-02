@@ -25,7 +25,7 @@ var (
 		tlsKey  string
 	}{
 		addr:    os.Getenv("ADDR"),
-		debug:   len(os.Getenv("DEBUG")) > 0,
+		debug:   os.Getenv("DEBUG") != "",
 		tlsCert: os.Getenv("TLS_CERT"),
 		tlsKey:  os.Getenv("TLS_KEY"),
 	}
