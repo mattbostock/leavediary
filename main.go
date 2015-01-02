@@ -25,17 +25,17 @@ var (
 		tlsCert: os.Getenv("TLS_CERT"),
 		tlsKey:  os.Getenv("TLS_KEY"),
 	}
-	m = pat.New()
-	n = negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
-	l = negronilogrus.NewMiddleware()
+	m          = pat.New()
+	n          = negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
+	logHandler = negronilogrus.NewMiddleware()
 )
 
 func init() {
 	// configure logging
-	n.Use(l)
-	handler.SetLogger(l.Logger)
+	n.Use(logHandler)
+	handler.SetLogger(logHandler.Logger)
 	if config.debug {
-		l.Logger.Level = logrus.DebugLevel
+		logHandler.Logger.Level = logrus.DebugLevel
 	}
 
 	n.Use(gzip.Gzip(gzip.BestCompression))
@@ -49,14 +49,14 @@ func init() {
 }
 
 func main() {
-	l.Logger.Infof("Listening on %s", config.addr)
+	logHandler.Logger.Infof("Listening on %s", config.addr)
 
 	if config.tlsCert == "" && config.tlsKey == "" {
-		l.Logger.Warningln(noTLSCertificateError)
-		l.Logger.Fatal(http.ListenAndServe(config.addr, n))
+		logHandler.Logger.Warningln(noTLSCertificateError)
+		logHandler.Logger.Fatal(http.ListenAndServe(config.addr, n))
 	} else {
-		l.Logger.Infoln("Listening with TLS")
-		l.Logger.Fatal(http.ListenAndServeTLS(config.addr, config.tlsCert, config.tlsKey, n))
+		logHandler.Logger.Infoln("Listening with TLS")
+		logHandler.Logger.Fatal(http.ListenAndServeTLS(config.addr, config.tlsCert, config.tlsKey, n))
 	}
 }
 
