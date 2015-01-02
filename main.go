@@ -13,6 +13,8 @@ import (
 	"gitlab.com/mattbostock/timeoff/handler"
 )
 
+const assetsPath = "assets"
+
 var (
 	config = &struct {
 		addr    string
@@ -39,7 +41,7 @@ func init() {
 	}
 
 	n.Use(negroni.NewRecovery())
-	n.Use(negroni.NewStatic(http.Dir("assets")))
+	n.Use(negroni.NewStatic(http.Dir(assetsPath)))
 	n.Use(gzip.Gzip(gzip.BestCompression))
 	n.UseHandler(mux)
 
