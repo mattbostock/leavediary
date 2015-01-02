@@ -26,7 +26,7 @@ var (
 		tlsKey:  os.Getenv("TLS_KEY"),
 	}
 	mux        = pat.New()
-	n          = negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
+	n          = negroni.New()
 	logHandler = negronilogrus.NewMiddleware()
 )
 
@@ -38,6 +38,8 @@ func init() {
 		logHandler.Logger.Level = logrus.DebugLevel
 	}
 
+	n.Use(negroni.NewRecovery())
+	n.Use(negroni.NewStatic(http.Dir("assets")))
 	n.Use(gzip.Gzip(gzip.BestCompression))
 	n.UseHandler(mux)
 
