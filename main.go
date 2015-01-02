@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	addr = os.Getenv("TIMEOFF_ADDR")
+	addr = os.Getenv("ADDR")
 	m    = pat.New()
 	n    = negroni.New(negroni.NewRecovery(), negroni.NewStatic(http.Dir("assets")))
 	l    = negronilogrus.NewMiddleware()
@@ -26,7 +26,7 @@ func init() {
 	n.UseHandler(m)
 	handler.SetLogger(l.Logger)
 
-	if len(os.Getenv("TIMEOFF_DEBUG")) > 0 {
+	if len(os.Getenv("DEBUG")) > 0 {
 		l.Logger.Level = logrus.DebugLevel
 	}
 
@@ -38,8 +38,8 @@ func init() {
 }
 
 func main() {
-	tlsCert := os.Getenv("TIMEOFF_TLS_CERT")
-	tlsKey := os.Getenv("TIMEOFF_TLS_KEY")
+	tlsCert := os.Getenv("TLS_CERT")
+	tlsKey := os.Getenv("TLS_KEY")
 
 	l.Logger.Infof("Listening on %s", addr)
 
@@ -52,5 +52,5 @@ func main() {
 	}
 }
 
-const noTLSCertificateError = "No TLS certficiate supplied. Consider setting TIMEOFF_TLS_CERT " +
-	"and TIMEOFF_TLS_KEY environment variables to enable TLS."
+const noTLSCertificateError = "No TLS certficiate supplied. Consider setting TLS_CERT " +
+	"and TLS_KEY environment variables to enable TLS."

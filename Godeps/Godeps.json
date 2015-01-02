@@ -1,6 +1,6 @@
 {
 	"ImportPath": "gitlab.com/mattbostock/timeoff",
-	"GoVersion": "go1.4",
+	"GoVersion": "go1.4.1",
 	"Deps": [
 		{
 			"ImportPath": "github.com/Sirupsen/logrus",
