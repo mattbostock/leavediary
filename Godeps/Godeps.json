@@ -25,6 +25,19 @@
 			"Rev": "ae2e162c4b2ae96aa66b596b2c18f17834299ed0"
 		},
 		{
+			"ImportPath": "github.com/jinzhu/gorm",
+			"Rev": "0219fb1cc033bda7ed78c90ed933fb3ecdb6f46f"
+		},
+		{
+			"ImportPath": "github.com/lib/pq/hstore",
+			"Comment": "go1.0-cutoff-8-g3e3efe5",
+			"Rev": "3e3efe51a0c4b23e817075438703cb15bd58c1a8"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-sqlite3",
+			"Rev": "c9a0db5d8951646743317f0756da0339fe144dd5"
+		},
+		{
 			"ImportPath": "github.com/meatballhat/negroni-logrus",
 			"Rev": "d5e114d7a445f7a3652cf807d3f83d5dceb8de26"
 		},

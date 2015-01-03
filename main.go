@@ -30,6 +30,7 @@ var (
 		tlsKey:  os.Getenv("TLS_KEY"),
 	}
 
+	db         = initDB()
 	mux        = pat.New()
 	logHandler = negronilogrus.NewMiddleware()
 	log        = logHandler.Logger
@@ -45,6 +46,7 @@ func init() {
 	}
 
 	handler.SetLogger(log)
+
 }
 
 func main() {
