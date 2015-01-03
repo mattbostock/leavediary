@@ -9,7 +9,7 @@ import (
 
 func registerRoutes() {
 	// Expose `expvar` debug variables
-	mux.Add("GET", "/debug/vars", http.DefaultServeMux)
+	mux.Handle("/debug/vars", http.DefaultServeMux)
 
 	mux.Get("/", handler.Index)
 }
