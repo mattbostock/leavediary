@@ -7,9 +7,9 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/pat"
-	"github.com/meatballhat/negroni-logrus"
 	"github.com/phyber/negroni-gzip/gzip"
 	"gitlab.com/mattbostock/timeoff/handler"
+	"gitlab.com/mattbostock/timeoff/middleware/negroni_logrus"
 )
 
 const (
@@ -30,10 +30,9 @@ var (
 		tlsKey:  os.Getenv("TLS_KEY"),
 	}
 
-	db         = initDB()
-	mux        = pat.New()
-	logHandler = negronilogrus.NewMiddleware()
-	log        = logHandler.Logger
+	db  = initDB()
+	mux = pat.New()
+	log = logrus.New()
 )
 
 func init() {
@@ -51,7 +50,7 @@ func init() {
 
 func main() {
 	n := negroni.New()
-	n.Use(logHandler) // logger must be first middleware
+	n.Use(negroniLogrus.New(log)) // logger must be first middleware
 	n.Use(negroni.NewRecovery())
 	n.Use(negroni.NewStatic(http.Dir(assetsPath)))
 	n.Use(gzip.Gzip(gzip.BestCompression))

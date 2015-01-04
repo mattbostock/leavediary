@@ -38,10 +38,6 @@
 			"Rev": "c9a0db5d8951646743317f0756da0339fe144dd5"
 		},
 		{
-			"ImportPath": "github.com/meatballhat/negroni-logrus",
-			"Rev": "d5e114d7a445f7a3652cf807d3f83d5dceb8de26"
-		},
-		{
 			"ImportPath": "github.com/phyber/negroni-gzip/gzip",
 			"Rev": "48f82605778a579cb8172122897f589e4023b537"
 		},
