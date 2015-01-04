@@ -36,12 +36,12 @@ var (
 )
 
 func init() {
-	if config.addr == "" {
-		config.addr = defaultAddr
-	}
-
 	if config.debug {
 		log.Level = logrus.DebugLevel
+	}
+
+	if config.addr == "" {
+		config.addr = defaultAddr
 	}
 
 	handler.SetLogger(log)
