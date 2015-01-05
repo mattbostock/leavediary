@@ -1,10 +1,6 @@
 package main
 
 import (
-	"compress/gzip"
-	"io"
-	"io/ioutil"
-	"net/http"
 	"testing"
 
 	agouti "github.com/sclevine/agouti/core"
@@ -60,31 +56,5 @@ func (s *acceptanceTestSuite) TestHomePageForJavascriptErrors() {
 	for _, log := range logs {
 		assert.NotEqual(s.T(), log.Level, "WARNING", log.Message)
 		assert.NotEqual(s.T(), log.Level, "SEVERE", log.Message)
-	}
-}
-
-func (s *acceptanceTestSuite) TestGZIPEnabledWhenSupported() {
-	var body []byte
-	var bodyReader io.Reader
-
-	for _, encoding := range []string{"", "gzip"} {
-		req, _ := http.NewRequest("GET", baseURL, nil)
-		req.Header.Add("Accept-Encoding", encoding)
-
-		resp, _ := http.DefaultTransport.RoundTrip(req)
-		defer resp.Body.Close()
-
-		if encoding == "gzip" {
-			gzBody, _ := gzip.NewReader(resp.Body)
-			defer gzBody.Close()
-			bodyReader = gzBody
-		} else {
-			bodyReader = resp.Body
-		}
-
-		body, _ = ioutil.ReadAll(bodyReader)
-
-		assert.Equal(s.T(), resp.Header.Get("Content-Encoding"), encoding)
-		assert.Contains(s.T(), string(body), "TimeOff")
 	}
 }

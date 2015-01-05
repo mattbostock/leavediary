@@ -7,7 +7,6 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/pat"
-	"github.com/phyber/negroni-gzip/gzip"
 	"gitlab.com/mattbostock/timeoff/handler"
 	"gitlab.com/mattbostock/timeoff/middleware/negroni_logrus"
 )
@@ -53,8 +52,6 @@ func main() {
 	n.Use(negroniLogrus.New(log)) // logger must be first middleware
 	n.Use(negroni.NewRecovery())
 	n.Use(negroni.NewStatic(http.Dir(assetsPath)))
-	n.Use(gzip.Gzip(gzip.BestCompression))
-
 	n.UseHandler(mux)
 	registerRoutes()
 
