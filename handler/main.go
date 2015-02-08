@@ -7,9 +7,7 @@ import (
 
 var (
 	l *logrus.Logger
-	o = render.New(render.Options{
-		Layout: "layout",
-	})
+	output = render.New(render.Options{Layout: "layout"})
 )
 
 func SetLogger(logger *logrus.Logger) {
