@@ -6,10 +6,10 @@ import (
 )
 
 var (
-	l *logrus.Logger
+	log    *logrus.Logger
 	output = render.New(render.Options{Layout: "layout"})
 )
 
-func SetLogger(logger *logrus.Logger) {
-	l = logger
+func SetLogger(l *logrus.Logger) {
+	log = l
 }
