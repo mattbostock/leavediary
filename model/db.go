@@ -1,12 +1,20 @@
-package main
+package model
 
 import (
+	"github.com/Sirupsen/logrus"
 	"github.com/jinzhu/gorm"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func initDB() *gorm.DB {
-	db, err := gorm.Open("sqlite3", "sqlite.db")
+var (
+	db  gorm.DB
+	log *logrus.Logger
+)
+
+func InitDB(driver, database string) {
+	var err error
+
+	db, err = gorm.Open(driver, database)
 
 	if err != nil {
 		panic(err)
@@ -15,8 +23,10 @@ func initDB() *gorm.DB {
 	// enable SQL logging
 	db.LogMode(true)
 	db.SetLogger(&debugLogger{})
+}
 
-	return &db
+func SetLogger(l *logrus.Logger) {
+	log = l
 }
 
 // debugLogger satisfies Gorm's logger interface

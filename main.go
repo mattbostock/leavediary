@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/pat"
 	"gitlab.com/mattbostock/timeoff/handler"
 	"gitlab.com/mattbostock/timeoff/middleware/negroni_logrus"
+	"gitlab.com/mattbostock/timeoff/model"
 )
 
 const (
@@ -30,7 +31,6 @@ var (
 		tlsKey:  os.Getenv("TLS_KEY"),
 	}
 
-	db  = initDB()
 	mux = pat.New()
 	log = logrus.New()
 )
@@ -43,6 +43,9 @@ func init() {
 	if config.addr == "" {
 		config.addr = defaultAddr
 	}
+
+	model.SetLogger(log)
+	model.InitDB("sqlite3", "sqlite.db")
 
 	handler.SetLogger(log)
 
