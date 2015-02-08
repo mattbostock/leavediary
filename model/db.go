@@ -23,6 +23,25 @@ func InitDB(driver, database string) {
 	// enable SQL logging
 	db.LogMode(true)
 	db.SetLogger(&debugLogger{})
+
+	db.AutoMigrate(&Employment{}, &LeaveYear{}, &Org{}, &User{})
+
+	db.Model(&Employment{}).AddIndex("id", "id")
+	db.Model(&Employment{}).AddIndex("deleted_at", "deleted_at")
+
+	db.Model(&LeaveAlloc{}).AddIndex("start_date", "start_date")
+	db.Model(&LeaveAlloc{}).AddIndex("deleted_at", "deleted_at")
+	db.Model(&LeaveAlloc{}).AddIndex("added_by", "added_by")
+
+	db.Model(&LeaveYear{}).AddIndex("start_date", "start_date")
+	db.Model(&LeaveYear{}).AddIndex("deleted_at", "deleted_at")
+
+	db.Model(&Org{}).AddIndex("id", "id")
+	db.Model(&Org{}).AddIndex("deleted_at", "deleted_at")
+
+	db.Model(&User{}).AddIndex("id", "id")
+	db.Model(&User{}).AddIndex("email", "email")
+	db.Model(&User{}).AddIndex("deleted_at", "deleted_at")
 }
 
 func SetLogger(l *logrus.Logger) {
