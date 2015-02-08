@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/bradfitz/http2"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/pat"
 	"gitlab.com/mattbostock/timeoff/handler"
@@ -57,12 +58,15 @@ func main() {
 
 	log.Infof("Listening on %s", config.addr)
 
+	s := &http.Server{Addr: config.addr, Handler: n}
+
 	if config.tlsCert == "" && config.tlsKey == "" {
 		log.Warningln(noTLSCertificateError)
-		log.Fatal(http.ListenAndServe(config.addr, n))
+		log.Fatal(s.ListenAndServe())
 	} else {
-		log.Infoln("Listening with TLS")
-		log.Fatal(http.ListenAndServeTLS(config.addr, config.tlsCert, config.tlsKey, n))
+		http2.ConfigureServer(s, nil)
+		log.Infoln("TLS-only; HTTP/2 enabled")
+		log.Fatal(s.ListenAndServeTLS(config.tlsCert, config.tlsKey))
 	}
 }
 

@@ -3,6 +3,11 @@
 TimeOff is a web application for tracking a worker's annual leave (vacation and public holidays),
 sickness and time in lieu.
 
+## HTTP/2
+
+Timeoff supports the HTTP/2 protocol over TLS for browsers that understand it.
+Other browsers will continue to use HTTP/1.1.
+
 ## Project status
 
 Currently in alpha. Many features are not yet implemented.
