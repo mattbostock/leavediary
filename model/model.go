@@ -55,16 +55,3 @@ type User struct {
 	UpdatedAt   time.Time
 	DeletedAt   time.Time
 }
-
-func (u *User) UpdateOrCreate() error {
-	// FIXME: Can we always trust Oauth providers to provide the correct email?
-	// Or match against Oauth user ID, e.g. GitHub user ID?
-
-	res := db.Where(User{Email: u.Email}).FirstOrInit(u)
-	if res.Error != nil {
-		return res.Error
-	}
-
-	res = db.Save(u)
-	return res.Error
-}
