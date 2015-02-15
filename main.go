@@ -64,7 +64,7 @@ func main() {
 	s := &http.Server{Addr: config.addr, Handler: n}
 
 	if config.tlsCert == "" && config.tlsKey == "" {
-		log.Warningln(noTLSCertificateError)
+		log.Warningln(errNoTLSCertificate)
 		log.Fatal(s.ListenAndServe())
 	} else {
 		http2.ConfigureServer(s, nil)
@@ -73,5 +73,5 @@ func main() {
 	}
 }
 
-const noTLSCertificateError = "No TLS certficiate supplied. Consider setting TLS_CERT " +
+const errNoTLSCertificate = "No TLS certficiate supplied. Consider setting TLS_CERT " +
 	"and TLS_KEY environment variables to enable TLS."
