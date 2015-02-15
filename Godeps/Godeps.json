@@ -57,6 +57,10 @@
 		{
 			"ImportPath": "github.com/unrolled/render",
 			"Rev": "4796b5bc747483bf9b20a50b2c80e00ed2c85fab"
+		},
+		{
+			"ImportPath": "github.com/unrolled/secure",
+			"Rev": "7c5d20f5d23b4825dfe542a006b37d6bdb5950f6"
 		}
 	]
 }
