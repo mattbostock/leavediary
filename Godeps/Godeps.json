@@ -29,6 +29,10 @@
 			"Rev": "ae2e162c4b2ae96aa66b596b2c18f17834299ed0"
 		},
 		{
+			"ImportPath": "github.com/gorilla/securecookie",
+			"Rev": "f0559d009e6943011cd1ba6eb16195cf5e0ed326"
+		},
+		{
 			"ImportPath": "github.com/jinzhu/gorm",
 			"Rev": "0219fb1cc033bda7ed78c90ed933fb3ecdb6f46f"
 		},
@@ -40,6 +44,10 @@
 		{
 			"ImportPath": "github.com/mattn/go-sqlite3",
 			"Rev": "c9a0db5d8951646743317f0756da0339fe144dd5"
+		},
+		{
+			"ImportPath": "github.com/nbio/httpcontext",
+			"Rev": "7728ddd6918bfe62e6ead85f3625534450c647a2"
 		},
 		{
 			"ImportPath": "github.com/sclevine/agouti/core",

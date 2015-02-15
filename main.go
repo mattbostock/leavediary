@@ -9,26 +9,31 @@ import (
 	"github.com/bradfitz/http2"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/pat"
+	"github.com/gorilla/securecookie"
 	"github.com/unrolled/secure"
 	"gitlab.com/mattbostock/timeoff/handler"
 	"gitlab.com/mattbostock/timeoff/middleware/negroni_logrus"
+	"gitlab.com/mattbostock/timeoff/middleware/sessions"
 	"gitlab.com/mattbostock/timeoff/model"
 )
 
 const (
 	assetsPath  = "assets"
 	defaultAddr = ":3000"
+	sessionName = "timeoff_session"
 )
 
 var (
 	config = &struct {
 		addr               string
 		allowedHosts       []string
+		cookieHashKey      []byte
 		debug              bool
 		tlsCert            string
 		tlsKey             string
 	}{
 		addr:               os.Getenv("ADDR"),
+		cookieHashKey:      []byte(os.Getenv("COOKIE_KEY")),
 		debug:              os.Getenv("DEBUG") != "",
 		tlsCert:            os.Getenv("TLS_CERT"),
 		tlsKey:             os.Getenv("TLS_KEY"),
@@ -53,14 +58,27 @@ func init() {
 		config.allowedHosts = strings.Split(os.Getenv("ALLOWED_HOSTS"), ",")
 	}
 
+	if len(config.cookieHashKey) == 0 {
+		log.Warningln(errNoCookieHashKey)
+		config.cookieHashKey = securecookie.GenerateRandomKey(32)
+	}
+	if len(config.cookieHashKey) != 32 {
+		// additonal check as securecookie.GenerateRandomKey() does not return errors
+		log.Fatalf(errCookieHashKeyWrongLength, len(config.cookieHashKey))
+	}
+
 	model.SetLogger(log)
 	model.InitDB("sqlite3", "sqlite.db")
 
+	sessions.SetLogger(log)
 	handler.SetLogger(log)
 
 }
 
 func main() {
+	sessionManager := sessions.New(sessionName, config.cookieHashKey)
+	handler.SetSessionManager(sessionManager)
+
 	secureOpts := secure.Options{
 		AllowedHosts:          config.allowedHosts,
 		BrowserXssFilter:      true,
@@ -76,6 +94,7 @@ func main() {
 	n.Use(negroni.NewRecovery())
 	n.Use(negroni.HandlerFunc(secureMiddleware.HandlerFuncWithNext))
 	n.Use(negroni.NewStatic(http.Dir(assetsPath)))
+	n.UseHandler(sessionManager)
 	n.UseHandler(mux)
 	registerRoutes()
 
@@ -104,4 +123,10 @@ const (
 
        errNoTLSCertificate = "No TLS certficiate supplied. Consider setting TLS_CERT " +
 		"and TLS_KEY environment variables to enable TLS."
+
+	errCookieHashKeyWrongLength = "COOKIE_KEY environment variable must be 32 characters long. Length provided: %d"
+
+	errNoCookieHashKey = "No cookie hash key supplied. You should set the COOKIE_KEY " +
+		"environment variable in a production environment. Falling back to use a temporary key " +
+		"which will persist only for the current running process."
 )

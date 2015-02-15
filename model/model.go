@@ -55,3 +55,8 @@ type User struct {
 	UpdatedAt   time.Time
 	DeletedAt   time.Time
 }
+
+func FindUser(id int64) (user User, err error) {
+	res := db.First(&user, id)
+	return user, res.Error
+}

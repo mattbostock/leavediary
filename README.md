@@ -3,6 +3,14 @@
 TimeOff is a web application for tracking a worker's annual leave (vacation and public holidays),
 sickness and time in lieu.
 
+## Requirements
+
+### TLS
+
+The application can be run with TLS support turned off but, due to the way
+TimeOff configures cookies with the `Secure` flag, the application must be
+frontend by a server providing TLS termination.
+
 ## HTTP/2
 
 Timeoff supports the HTTP/2 protocol over TLS for browsers that understand it.
