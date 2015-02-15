@@ -9,11 +9,34 @@
     <script src="/js/vendor/modernizr.js"></script>
   </head>
   <body>
-    <div class="row">
-      <div class="large-12">
-        <h1>TimeOff</h1>
-      </div>
-    </div>
+    <nav class="top-bar" data-topbar role="navigation" style="margin-bottom:2rem;">
+      <ul class="title-area">
+        <li class="name">
+          <h1><a href="/">TimeOff</a></h1>
+        </li>
+        {{if .User.ID}}
+        <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+        {{end}}
+      </ul>
+
+      {{if .User.ID}}
+      <section class="top-bar-section">
+        <!-- Right Nav Section -->
+        <ul class="right">
+          <li class="has-dropdown">
+            <a href="#">Signed in as {{.User.Email}}</a>
+          </li>
+          <li class="active"><a href="/logout">Logout</a></li>
+        </ul>
+
+        <!-- Left Nav Section -->
+        <ul class="left">
+          <li class="divider"></li>
+          <li><a href="/dashboard">Dashboard</a></li>
+        </ul>
+      </section>
+      {{end}}
+    </nav>
     {{ yield }}
     <script src="/js/vendor/jquery.js"></script>
     <script src="/js/foundation.min.js"></script>
