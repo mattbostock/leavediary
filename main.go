@@ -15,6 +15,8 @@ import (
 	"gitlab.com/mattbostock/timeoff/middleware/negroni_logrus"
 	"gitlab.com/mattbostock/timeoff/middleware/sessions"
 	"gitlab.com/mattbostock/timeoff/model"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/github"
 )
 
 const (
@@ -29,12 +31,16 @@ var (
 		allowedHosts       []string
 		cookieHashKey      []byte
 		debug              bool
+		gitHubClientID     string
+		gitHubClientSecret string
 		tlsCert            string
 		tlsKey             string
 	}{
 		addr:               os.Getenv("ADDR"),
 		cookieHashKey:      []byte(os.Getenv("COOKIE_KEY")),
 		debug:              os.Getenv("DEBUG") != "",
+		gitHubClientID:     os.Getenv("GITHUB_CLIENT_ID"),
+		gitHubClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
 		tlsCert:            os.Getenv("TLS_CERT"),
 		tlsKey:             os.Getenv("TLS_KEY"),
 	}
@@ -65,6 +71,17 @@ func init() {
 	if len(config.cookieHashKey) != 32 {
 		// additonal check as securecookie.GenerateRandomKey() does not return errors
 		log.Fatalf(errCookieHashKeyWrongLength, len(config.cookieHashKey))
+	}
+
+	if config.gitHubClientID == "" || config.gitHubClientSecret == "" {
+		log.Fatalf(errNoGitHubCredentials)
+	}
+
+	handler.OauthConfig = &oauth2.Config{
+		ClientID:     config.gitHubClientID,
+		ClientSecret: config.gitHubClientSecret,
+		Endpoint:     github.Endpoint,
+		Scopes:       []string{"user:email"},
 	}
 
 	model.SetLogger(log)
@@ -129,4 +146,7 @@ const (
 	errNoCookieHashKey = "No cookie hash key supplied. You should set the COOKIE_KEY " +
 		"environment variable in a production environment. Falling back to use a temporary key " +
 		"which will persist only for the current running process."
+
+	errNoGitHubCredentials = "No GitHub Oauth credentials supplied. Set both GITHUB_CLIENT_ID and " +
+		"GITHUB_CLIENT_SECRET environment variables."
 )

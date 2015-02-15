@@ -17,6 +17,14 @@
 			"Rev": "2b6e86bff68451fcd38bd9e2da90e0b70e85983d"
 		},
 		{
+			"ImportPath": "github.com/google/go-github/github",
+			"Rev": "62a50bb14ba982864a5f54e344d0e05764fb41b1"
+		},
+		{
+			"ImportPath": "github.com/google/go-querystring/query",
+			"Rev": "d8840cbb2baa915f4836edda4750050a2c0b7aea"
+		},
+		{
 			"ImportPath": "github.com/gorilla/context",
 			"Rev": "50c25fb3b2b3b3cc724e9b6ac75fb44b3bccd0da"
 		},
@@ -69,6 +77,14 @@
 		{
 			"ImportPath": "github.com/unrolled/secure",
 			"Rev": "7c5d20f5d23b4825dfe542a006b37d6bdb5950f6"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "1cd7b7179478daf1f19f8b4b4f08106ef411619b"
+		},
+		{
+			"ImportPath": "golang.org/x/oauth2",
+			"Rev": "6f28996586216f4539154b9c03e87c4b6bfe4338"
 		}
 	]
 }

@@ -13,6 +13,7 @@ func registerRoutes() {
 	// Expose `expvar` debug variables
 	mux.Handle("/debug/vars", http.DefaultServeMux)
 
+	mux.Get("/oauth/github/callback", handler.GithubOauthCallback)
 	mux.Get("/dashboard", handler.Dashboard)
 	mux.Get("/logout", handler.Logout)
 

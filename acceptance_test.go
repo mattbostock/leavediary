@@ -34,6 +34,9 @@ func (s *acceptanceTestSuite) SetupSuite() {
 		s.T().Error(err)
 	}
 
+	config.gitHubClientID = "abc"
+	config.gitHubClientSecret = "xyz"
+
 	go main()
 }
 

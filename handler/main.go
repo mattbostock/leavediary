@@ -6,6 +6,8 @@ import (
 	"gitlab.com/mattbostock/timeoff/middleware/sessions"
 )
 
+const oauthStateCookieName = "github_state"
+
 var (
 	log            *logrus.Logger
 	output         = render.New(render.Options{Layout: "layout"})

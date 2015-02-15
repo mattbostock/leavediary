@@ -1,3 +1,16 @@
 <div class="row">
-  You have {{ . }} days remaining this leave year.
+<div class="large-12 columns">
+{{if len .Employments}}
+  <p>You have n days remaining this leave year</p>
+{{else}}
+  <form method="post">
+    <h2>Your details</h2>
+    <p>
+      To get started, please answer these questions about your current employer.
+    </p>
+
+    <input class="button" type="submit" value="Continue">
+  </form>
+{{end}}
+</div>
 </div>
