@@ -1,1 +1,1 @@
-web: go build && ADDR=:${PORT} ./timeoff
+web: ADDR=:${PORT} timeoff
