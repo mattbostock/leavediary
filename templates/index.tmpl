@@ -1,6 +1,11 @@
 <div class="row">
 <div class="large-12 columns">
   <p>TimeOff helps to track how much vacation or holiday you have.</p>
+</div>
+</div>
+
+<div class="row">
+<div class="large-12 columns">
 {{ if not .User.ID }}
   <a role="button" href="{{ .GitHubOauthURL }}" class="button large github-icon">Login with GitHub</a>
 {{ else }}
