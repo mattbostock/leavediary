@@ -16,6 +16,26 @@ frontend by a server providing TLS termination.
 Timeoff supports the HTTP/2 protocol over TLS for browsers that understand it.
 Other browsers will continue to use HTTP/1.1.
 
+## Getting started
+
+The application supports Heroku and Docker for deployment to Production using the
+provided `Procfile` and `Dockerfile` respectively. For deployment to Heroku, use
+the [Go build pack](https://github.com/kr/heroku-buildpack-go).
+
+For a development environment:
+
+    # Ensure you have Go 1.4 installed
+    godep go get -t -v ./...
+    godep go build
+
+    # Generate TLS certificates for development use only
+    go run $GOROOT/src/crypto/tls/generate_cert.go -host localhost
+
+    # Run the application with debug logging enabled
+    # Replace the GitHub client ID and secret with your own:
+    # https://github.com/settings/applications
+    DEBUG=1 ADDR=localhost:3000 TLS_CERT=cert.pem TLS_KEY=key.pem GITHUB_CLIENT_ID=abc GITHUB_CLIENT_SECRET=xyz./timeoff
+
 ## Project status
 
 Currently in alpha. Many features are not yet implemented.
