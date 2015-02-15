@@ -138,9 +138,6 @@ func main() {
 const (
 	errAllHostsEnabled = "Accepting connections for all HTTP hosts. Consider setting the ALLOWED_HOSTS environment variable."
 
-       errNoTLSCertificate = "No TLS certficiate supplied. Consider setting TLS_CERT " +
-		"and TLS_KEY environment variables to enable TLS."
-
 	errCookieHashKeyWrongLength = "COOKIE_KEY environment variable must be 32 characters long. Length provided: %d"
 
 	errNoCookieHashKey = "No cookie hash key supplied. You should set the COOKIE_KEY " +
@@ -149,4 +146,8 @@ const (
 
 	errNoGitHubCredentials = "No GitHub Oauth credentials supplied. Set both GITHUB_CLIENT_ID and " +
 		"GITHUB_CLIENT_SECRET environment variables."
+
+	errNoTLSCertificate = "No TLS certficiate supplied. Consider setting TLS_CERT " +
+		"and TLS_KEY environment variables to enable TLS. TimeOff will not work unless you " +
+		"are using TLS upstream."
 )
