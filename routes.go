@@ -8,9 +8,13 @@ import (
 )
 
 func registerRoutes() {
+	mux.NotFoundHandler = http.NotFoundHandler()
+
 	// Expose `expvar` debug variables
 	mux.Handle("/debug/vars", http.DefaultServeMux)
 
 	mux.Get("/dashboard", handler.Dashboard)
-	mux.Get("/", handler.Index)
+	mux.Get("/logout", handler.Logout)
+
+	mux.Handle("/", http.HandlerFunc(handler.Index))
 }
