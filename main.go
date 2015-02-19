@@ -58,7 +58,9 @@ func init() {
 	if config.addr == "" {
 		config.addr = defaultAddr
 	}
+}
 
+func main() {
 	if os.Getenv("ALLOWED_HOSTS") == "" {
 		config.allowedHosts = nil
 	} else {
@@ -91,9 +93,6 @@ func init() {
 	sessions.SetLogger(log)
 	handler.SetLogger(log)
 
-}
-
-func main() {
 	sessionManager := sessions.New(sessionName, config.cookieHashKey)
 	handler.SetSessionManager(sessionManager)
 
