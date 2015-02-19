@@ -26,6 +26,10 @@ func TestAcceptanceTests(t *testing.T) {
 func (s *acceptanceTestSuite) SetupSuite() {
 	var err error
 
+	config.gitHubClientID = "abc"
+	config.gitHubClientSecret = "xyz"
+	go main()
+
 	s.driver, err = agouti.PhantomJS()
 	s.driver.Start()
 	s.page, err = s.driver.Page(agouti.Use().Browser("chrome"))
@@ -33,11 +37,6 @@ func (s *acceptanceTestSuite) SetupSuite() {
 	if err != nil {
 		s.T().Error(err)
 	}
-
-	config.gitHubClientID = "abc"
-	config.gitHubClientSecret = "xyz"
-
-	go main()
 }
 
 func (s *acceptanceTestSuite) TearDownSuite() {
