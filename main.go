@@ -22,7 +22,7 @@ import (
 
 const (
 	assetsPath  = "assets"
-	defaultAddr = ":3000"
+	defaultAddr = "localhost:3000"
 	sessionName = "timeoff_session"
 )
 
