@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"net/http"
 	"os"
 	"strings"
@@ -123,7 +124,8 @@ func main() {
 		log.Warningln(errAllHostsEnabled)
 	}
 
-	s := &http.Server{Addr: config.addr, Handler: n}
+	c := &tls.Config{MinVersion: tls.VersionTLS10} // disable SSLv3, prevent POODLE attack
+	s := &http.Server{Addr: config.addr, Handler: n, TLSConfig: c}
 
 	if config.tlsCert == "" && config.tlsKey == "" {
 		log.Warningln(errNoTLSCertificate)
