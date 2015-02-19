@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 
 	agouti "github.com/sclevine/agouti/core"
@@ -8,7 +9,7 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-const baseURL = "http://localhost:3000"
+var baseURL string
 
 type acceptanceTestSuite struct {
 	suite.Suite
@@ -25,6 +26,8 @@ func TestAcceptanceTests(t *testing.T) {
 
 func (s *acceptanceTestSuite) SetupSuite() {
 	var err error
+
+	baseURL = fmt.Sprintf("http://%s", config.addr)
 
 	config.gitHubClientID = "abc"
 	config.gitHubClientSecret = "xyz"
