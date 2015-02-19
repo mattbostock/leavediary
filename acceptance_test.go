@@ -1,13 +1,18 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
+	"net/http"
+	"path/filepath"
 	"testing"
 
 	agouti "github.com/sclevine/agouti/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
+
+const fixturesPath = "test_fixtures"
 
 var baseURL string
 
@@ -27,10 +32,13 @@ func TestAcceptanceTests(t *testing.T) {
 func (s *acceptanceTestSuite) SetupSuite() {
 	var err error
 
-	baseURL = fmt.Sprintf("http://%s", config.addr)
+	baseURL = fmt.Sprintf("https://%s", config.addr)
 
 	config.gitHubClientID = "abc"
 	config.gitHubClientSecret = "xyz"
+	config.tlsCert = filepath.Join(fixturesPath, "cert.pem")
+	config.tlsKey = filepath.Join(fixturesPath, "key.pem")
+
 	go main()
 
 	s.driver, err = agouti.PhantomJS()
@@ -39,6 +47,11 @@ func (s *acceptanceTestSuite) SetupSuite() {
 
 	if err != nil {
 		s.T().Error(err)
+	}
+
+	// don't verify our development TLS certificates
+	http.DefaultTransport = &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 }
 
@@ -62,4 +75,13 @@ func (s *acceptanceTestSuite) TestHomePageForJavascriptErrors() {
 		assert.NotEqual(s.T(), "WARNING", log.Level, log.Message)
 		assert.NotEqual(s.T(), "SEVERE", log.Level, log.Message)
 	}
+}
+
+func (s *acceptanceTestSuite) TestPageNotFound() {
+	resp, err := http.Get(baseURL + "/non-existentent-page")
+	if err != nil {
+		s.T().Error(err)
+	}
+
+	assert.Equal(s.T(), http.StatusNotFound, resp.StatusCode)
 }
