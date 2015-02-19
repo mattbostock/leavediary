@@ -59,7 +59,7 @@ func (s *acceptanceTestSuite) TestHomePageForJavascriptErrors() {
 	logs, _ := s.page.ReadLogs("browser", true)
 
 	for _, log := range logs {
-		assert.NotEqual(s.T(), log.Level, "WARNING", log.Message)
-		assert.NotEqual(s.T(), log.Level, "SEVERE", log.Message)
+		assert.NotEqual(s.T(), "WARNING", log.Level, log.Message)
+		assert.NotEqual(s.T(), "SEVERE", log.Level, log.Message)
 	}
 }
