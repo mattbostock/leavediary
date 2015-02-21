@@ -84,17 +84,30 @@ func (s *acceptanceTestSuite) TearDownSuite() {
 }
 
 func (s *acceptanceTestSuite) TestDebugVarsExposed() {
-	_ = s.page.Navigate(baseURL + "/debug/vars")
-	bodyText, _ := s.page.Find("body").Text()
+	err := s.page.Navigate(baseURL + "/debug/vars")
+	if err != nil {
+		s.T().Error(err)
+	}
+
+	bodyText, err := s.page.Find("body").Text()
+	if err != nil {
+		s.T().Error(err)
+	}
 
 	assert.Contains(s.T(), bodyText, "cmdline")
 	assert.Contains(s.T(), bodyText, "memstats")
 }
 
 func (s *acceptanceTestSuite) TestHomePageForJavascriptErrors() {
-	_ = s.page.Navigate(baseURL)
+	err := s.page.Navigate(baseURL)
+	if err != nil {
+		s.T().Error(err)
+	}
 
-	logs, _ := s.page.ReadAllLogs("browser")
+	logs, err := s.page.ReadAllLogs("browser")
+	if err != nil {
+		s.T().Error(err)
+	}
 
 	for _, log := range logs {
 		assert.NotEqual(s.T(), "WARNING", log.Level, log.Message)
