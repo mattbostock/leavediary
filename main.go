@@ -102,7 +102,7 @@ func main() {
 	secureOpts := secure.Options{
 		AllowedHosts:          config.allowedHosts,
 		BrowserXssFilter:      true,
-		ContentSecurityPolicy: "default-src 'self' 'unsafe-inline'; img-src 'self' data:",
+		ContentSecurityPolicy: "default-src 'self'; img-src 'self' data:",
 		FrameDeny:             true,
 		STSIncludeSubdomains:  true,
 		STSSeconds:            365 * 24 * 60 * 60,
