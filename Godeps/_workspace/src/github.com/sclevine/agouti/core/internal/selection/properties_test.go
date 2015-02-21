@@ -5,56 +5,35 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/sclevine/agouti/api"
 	"github.com/sclevine/agouti/core/internal/mocks"
 	. "github.com/sclevine/agouti/core/internal/selection"
-	"github.com/sclevine/agouti/core/internal/types"
 )
 
 var _ = Describe("Selection", func() {
 	var (
-		selection     *Selection
-		client        *mocks.Client
-		element       *mocks.Element
-		secondElement *mocks.Element
+		selection         *Selection
+		session           *mocks.Session
+		elementRepository *mocks.ElementRepository
+		element           *mocks.Element
+		secondElement     *mocks.Element
 	)
 
 	BeforeEach(func() {
-		client = &mocks.Client{}
+		session = &mocks.Session{}
 		element = &mocks.Element{}
 		secondElement = &mocks.Element{}
-		emptySelection := &Selection{Client: client}
+		elementRepository = &mocks.ElementRepository{}
+		emptySelection := &Selection{Session: session, Elements: elementRepository}
 		selection = emptySelection.AppendCSS("#selector")
 	})
 
-	ItShouldEnsureASingleElement := func(matcher func() error) {
-		Context("when multiple elements are returned", func() {
-			It("should return an error with the number of elements", func() {
-				client.GetElementsCall.ReturnElements = []types.Element{element, secondElement}
-				Expect(matcher()).To(MatchError("failed to select 'CSS: #selector': method does not support multiple elements (2)"))
-			})
-		})
-	}
-
-	ItShouldEnsureAtLeastOneElement := func(matcher func() error) {
-		Context("when zero elements are returned", func() {
-			It("should return an error with the number of elements", func() {
-				client.GetElementsCall.ReturnElements = []types.Element{}
-				Expect(matcher()).To(MatchError("failed to select 'CSS: #selector': no elements found"))
-			})
-		})
-	}
-
 	Describe("#Text", func() {
 		BeforeEach(func() {
-			client.GetElementsCall.ReturnElements = []types.Element{element}
+			elementRepository.GetExactlyOneCall.ReturnElement = element
 		})
 
-		ItShouldEnsureASingleElement(func() error {
-			_, err := selection.Text()
-			return err
-		})
-
-		Context("when the client fails to retrieve the element text", func() {
+		Context("when the session fails to retrieve the element text", func() {
 			It("should return an error", func() {
 				element.GetTextCall.Err = errors.New("some error")
 				_, err := selection.Text()
@@ -62,42 +41,35 @@ var _ = Describe("Selection", func() {
 			})
 		})
 
-		Context("when the client succeeds in retrieving the element text", func() {
+		Context("when the session succeeds in retrieving the element text", func() {
 			It("should successfully return the text", func() {
 				element.GetTextCall.ReturnText = "some text"
-				text, err := selection.Text()
-				Expect(text).To(Equal("some text"))
-				Expect(err).NotTo(HaveOccurred())
+				Expect(selection.Text()).To(Equal("some text"))
 			})
 		})
 	})
 
 	Describe("#Active", func() {
 		BeforeEach(func() {
-			client.GetElementsCall.ReturnElements = []types.Element{element}
+			elementRepository.GetExactlyOneCall.ReturnElement = element
 		})
 
-		ItShouldEnsureASingleElement(func() error {
-			_, err := selection.Active()
-			return err
-		})
-
-		Context("when the client fails to retrieve the active element", func() {
+		Context("when the session fails to retrieve the active element", func() {
 			It("should return an error", func() {
-				client.GetActiveElementCall.Err = errors.New("some error")
+				session.GetActiveElementCall.Err = errors.New("some error")
 				_, err := selection.Active()
 				Expect(err).To(MatchError("failed to retrieve active element: some error"))
 			})
 		})
 
 		It("should compare the active and selected elements", func() {
-			activeElement := &mocks.Element{}
-			client.GetActiveElementCall.ReturnElement = activeElement
+			activeElement := &api.Element{}
+			session.GetActiveElementCall.ReturnElement = activeElement
 			selection.Active()
 			Expect(element.IsEqualToCall.Element).To(Equal(activeElement))
 		})
 
-		Context("when the client fails to compare active element to the selected element", func() {
+		Context("when the session fails to compare active element to the selected element", func() {
 			It("should return an error", func() {
 				element.IsEqualToCall.Err = errors.New("some error")
 				_, err := selection.Active()
@@ -108,30 +80,21 @@ var _ = Describe("Selection", func() {
 		Context("when the active element equals the selected element", func() {
 			It("should successfully return true", func() {
 				element.IsEqualToCall.ReturnEquals = true
-				equal, err := selection.Active()
-				Expect(equal).To(BeTrue())
-				Expect(err).NotTo(HaveOccurred())
+				Expect(selection.Active()).To(BeTrue())
 			})
 		})
 
 		Context("when the active element does not equal the selected element", func() {
 			It("should successfully return false", func() {
 				element.IsEqualToCall.ReturnEquals = false
-				equal, err := selection.Active()
-				Expect(equal).To(BeFalse())
-				Expect(err).NotTo(HaveOccurred())
+				Expect(selection.Active()).To(BeFalse())
 			})
 		})
 	})
 
 	Describe("#Attribute", func() {
 		BeforeEach(func() {
-			client.GetElementsCall.ReturnElements = []types.Element{element}
-		})
-
-		ItShouldEnsureASingleElement(func() error {
-			_, err := selection.Text()
-			return err
+			elementRepository.GetExactlyOneCall.ReturnElement = element
 		})
 
 		It("should request the attribute value using the attribute name", func() {
@@ -139,7 +102,7 @@ var _ = Describe("Selection", func() {
 			Expect(element.GetAttributeCall.Attribute).To(Equal("some-attribute"))
 		})
 
-		Context("when the client fails to retrieve the requested element attribute", func() {
+		Context("when the session fails to retrieve the requested element attribute", func() {
 			It("should return an error", func() {
 				element.GetAttributeCall.Err = errors.New("some error")
 				_, err := selection.Attribute("some-attribute")
@@ -147,24 +110,17 @@ var _ = Describe("Selection", func() {
 			})
 		})
 
-		Context("when the client succeeds in retrieving the requested element attribute", func() {
+		Context("when the session succeeds in retrieving the requested element attribute", func() {
 			It("should successfully return the attribute value", func() {
 				element.GetAttributeCall.ReturnValue = "some value"
-				value, err := selection.Attribute("some-attribute")
-				Expect(value).To(Equal("some value"))
-				Expect(err).NotTo(HaveOccurred())
+				Expect(selection.Attribute("some-attribute")).To(Equal("some value"))
 			})
 		})
 	})
 
 	Describe("#CSS", func() {
 		BeforeEach(func() {
-			client.GetElementsCall.ReturnElements = []types.Element{element}
-		})
-
-		ItShouldEnsureASingleElement(func() error {
-			_, err := selection.Text()
-			return err
+			elementRepository.GetExactlyOneCall.ReturnElement = element
 		})
 
 		It("should successfully request the CSS property value using the property name", func() {
@@ -172,7 +128,7 @@ var _ = Describe("Selection", func() {
 			Expect(element.GetCSSCall.Property).To(Equal("some-property"))
 		})
 
-		Context("when the the client fails to retrieve the requested element CSS property", func() {
+		Context("when the the session fails to retrieve the requested element CSS property", func() {
 			It("should return an error", func() {
 				element.GetCSSCall.Err = errors.New("some error")
 				_, err := selection.CSS("some-property")
@@ -180,27 +136,20 @@ var _ = Describe("Selection", func() {
 			})
 		})
 
-		Context("when the client succeeds in retrieving the requested element CSS property", func() {
+		Context("when the session succeeds in retrieving the requested element CSS property", func() {
 			It("should successfully return the property value", func() {
 				element.GetCSSCall.ReturnValue = "some value"
-				value, err := selection.CSS("some-property")
-				Expect(value).To(Equal("some value"))
-				Expect(err).NotTo(HaveOccurred())
+				Expect(selection.CSS("some-property")).To(Equal("some value"))
 			})
 		})
 	})
 
 	Describe("#Selected", func() {
 		BeforeEach(func() {
-			client.GetElementsCall.ReturnElements = []types.Element{element, secondElement}
+			elementRepository.GetAtLeastOneCall.ReturnElements = []Element{element, secondElement}
 		})
 
-		ItShouldEnsureAtLeastOneElement(func() error {
-			_, err := selection.Selected()
-			return err
-		})
-
-		Context("when the the client fails to retrieve any elements' selected status", func() {
+		Context("when the the session fails to retrieve any elements' selected status", func() {
 			It("should return an error", func() {
 				element.IsSelectedCall.ReturnSelected = true
 				secondElement.IsSelectedCall.Err = errors.New("some error")
@@ -209,36 +158,27 @@ var _ = Describe("Selection", func() {
 			})
 		})
 
-		Context("when the client succeeds in retrieving all elements' selected status", func() {
+		Context("when the session succeeds in retrieving all elements' selected status", func() {
 			It("should return true when all elements are selected", func() {
 				element.IsSelectedCall.ReturnSelected = true
 				secondElement.IsSelectedCall.ReturnSelected = true
-				value, err := selection.Selected()
-				Expect(value).To(BeTrue())
-				Expect(err).NotTo(HaveOccurred())
+				Expect(selection.Selected()).To(BeTrue())
 			})
 
 			It("should return false when any elements are not selected", func() {
 				element.IsSelectedCall.ReturnSelected = true
 				secondElement.IsSelectedCall.ReturnSelected = false
-				value, err := selection.Selected()
-				Expect(value).To(BeFalse())
-				Expect(err).NotTo(HaveOccurred())
+				Expect(selection.Selected()).To(BeFalse())
 			})
 		})
 	})
 
 	Describe("#Visible", func() {
 		BeforeEach(func() {
-			client.GetElementsCall.ReturnElements = []types.Element{element, secondElement}
+			elementRepository.GetAtLeastOneCall.ReturnElements = []Element{element, secondElement}
 		})
 
-		ItShouldEnsureAtLeastOneElement(func() error {
-			_, err := selection.Visible()
-			return err
-		})
-
-		Context("when the the client fails to retrieve any elements' visible status", func() {
+		Context("when the the session fails to retrieve any elements' visible status", func() {
 			It("should return an error", func() {
 				element.IsDisplayedCall.ReturnDisplayed = true
 				secondElement.IsDisplayedCall.Err = errors.New("some error")
@@ -247,36 +187,27 @@ var _ = Describe("Selection", func() {
 			})
 		})
 
-		Context("when the client succeeds in retrieving all elements' visible status", func() {
+		Context("when the session succeeds in retrieving all elements' visible status", func() {
 			It("should return true when all elements are visible", func() {
 				element.IsDisplayedCall.ReturnDisplayed = true
 				secondElement.IsDisplayedCall.ReturnDisplayed = true
-				value, err := selection.Visible()
-				Expect(value).To(BeTrue())
-				Expect(err).NotTo(HaveOccurred())
+				Expect(selection.Visible()).To(BeTrue())
 			})
 
 			It("should return false when any elements are not visible", func() {
 				element.IsDisplayedCall.ReturnDisplayed = true
 				secondElement.IsDisplayedCall.ReturnDisplayed = false
-				value, err := selection.Visible()
-				Expect(value).To(BeFalse())
-				Expect(err).NotTo(HaveOccurred())
+				Expect(selection.Visible()).To(BeFalse())
 			})
 		})
 	})
 
 	Describe("#Enabled", func() {
 		BeforeEach(func() {
-			client.GetElementsCall.ReturnElements = []types.Element{element, secondElement}
+			elementRepository.GetAtLeastOneCall.ReturnElements = []Element{element, secondElement}
 		})
 
-		ItShouldEnsureAtLeastOneElement(func() error {
-			_, err := selection.Enabled()
-			return err
-		})
-
-		Context("when the the client fails to retrieve any elements' enabled status", func() {
+		Context("when the the session fails to retrieve any elements' enabled status", func() {
 			It("should return an error", func() {
 				element.IsEnabledCall.ReturnEnabled = true
 				secondElement.IsEnabledCall.Err = errors.New("some error")
@@ -285,21 +216,17 @@ var _ = Describe("Selection", func() {
 			})
 		})
 
-		Context("when the client succeeds in retrieving all elements' enabled status", func() {
+		Context("when the session succeeds in retrieving all elements' enabled status", func() {
 			It("should return true when all elements are enabled", func() {
 				element.IsEnabledCall.ReturnEnabled = true
 				secondElement.IsEnabledCall.ReturnEnabled = true
-				value, err := selection.Enabled()
-				Expect(value).To(BeTrue())
-				Expect(err).NotTo(HaveOccurred())
+				Expect(selection.Enabled()).To(BeTrue())
 			})
 
 			It("should return false when any elements are not enabled", func() {
 				element.IsEnabledCall.ReturnEnabled = true
 				secondElement.IsEnabledCall.ReturnEnabled = false
-				value, err := selection.Enabled()
-				Expect(value).To(BeFalse())
-				Expect(err).NotTo(HaveOccurred())
+				Expect(selection.Enabled()).To(BeFalse())
 			})
 		})
 	})

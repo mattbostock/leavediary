@@ -1,10 +1,12 @@
 package core
 
 import (
+	"time"
+
+	"github.com/sclevine/agouti"
+	"github.com/sclevine/agouti/api"
 	"github.com/sclevine/agouti/core/internal/page"
 	"github.com/sclevine/agouti/core/internal/selection"
-	"github.com/sclevine/agouti/core/internal/types"
-	"time"
 )
 
 // A Page represents an open browser session. Pages may be created using the
@@ -20,7 +22,7 @@ type Page interface {
 	Navigate(url string) error
 
 	// SetCookie sets a cookie on the page.
-	SetCookie(cookie WebCookie) error
+	SetCookie(cookie agouti.Cookie) error
 
 	// DeleteCookie deletes a cookie on the page by name.
 	DeleteCookie(name string) error
@@ -88,6 +90,19 @@ type Page interface {
 	// as well.
 	SwitchToRootFrame() error
 
+	// SwitchToWindow switches to the first available window with the provided name
+	// (JavaScript `window.name` attribute).
+	SwitchToWindow(name string) error
+
+	// NextWindow switches to the next available window.
+	NextWindow() error
+
+	// CloseWindow closes the active window.
+	CloseWindow() error
+
+	// WindowCount returns the number of available windows.
+	WindowCount() (int, error)
+
 	// ReadLogs returns log messages of the provided log type. For example,
 	// page.ReadLogs("browser") returns browser console logs, such as JavaScript logs
 	// and errors. If the all argument is provided as true, all logs since the session
@@ -114,8 +129,7 @@ type Log struct {
 	Time time.Time
 }
 
-func newPage(client types.Client) Page {
-	emptySelection := &selection.Selection{Client: client}
-	pageSelection := &userSelection{emptySelection}
-	return &userPage{&page.Page{Client: client}, pageSelection}
+func newPage(session *api.Session) Page {
+	pageSelection := &userSelection{selection.NewSelection(session)}
+	return &userPage{&page.Page{Session: session}, pageSelection}
 }

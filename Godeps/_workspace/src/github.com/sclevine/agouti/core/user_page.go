@@ -1,14 +1,17 @@
 package core
 
-import "github.com/sclevine/agouti/core/internal/page"
+import (
+	"github.com/sclevine/agouti"
+	"github.com/sclevine/agouti/core/internal/page"
+)
 
 type userPage struct {
 	*page.Page
 	*userSelection
 }
 
-func (u *userPage) SetCookie(cookie WebCookie) error {
-	return u.SetCookie(cookie)
+func (u *userPage) SetCookie(cookie agouti.Cookie) error {
+	return u.Page.SetCookie(cookie)
 }
 
 func (u *userPage) ReadLogs(logType string, all ...bool) ([]Log, error) {

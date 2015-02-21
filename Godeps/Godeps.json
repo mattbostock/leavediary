@@ -58,9 +58,9 @@
 			"Rev": "7728ddd6918bfe62e6ead85f3625534450c647a2"
 		},
 		{
-			"ImportPath": "github.com/sclevine/agouti/core",
-			"Comment": "v1-latest-6-g8c0b6a4",
-			"Rev": "8c0b6a4b6f9012c8ecc9d11efc8b3813a6d1f3a8"
+			"ImportPath": "github.com/sclevine/agouti",
+			"Comment": "2.0-15-g7fd2038",
+			"Rev": "7fd203841f2a5b43b675f4c8d05b4668bbae1e53"
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",

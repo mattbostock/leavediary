@@ -70,10 +70,6 @@ func (c capabilities) Custom(key string, value interface{}) Capabilities {
 }
 
 func (c capabilities) JSON() (string, error) {
-	desiredCapabilities := struct {
-		DesiredCapabilities map[string]interface{} `json:"desiredCapabilities"`
-	}{c}
-
-	capabilitiesJSON, err := json.Marshal(desiredCapabilities)
+	capabilitiesJSON, err := json.Marshal(c)
 	return string(capabilitiesJSON), err
 }
