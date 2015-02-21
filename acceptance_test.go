@@ -44,7 +44,7 @@ func (s *acceptanceTestSuite) SetupSuite() {
 
 	go main()
 
-	s.driver = agouti.PhantomJS()
+	s.driver = agouti.NewWebDriver("http://{{.Address}}", []string{"phantomjs", "--webdriver={{.Address}}", "--ignore-ssl-errors=true"})
 	s.driver.Start()
 
 	s.page, err = s.driver.NewPage(agouti.Desired(agouti.NewCapabilities().Browser("chrome")))
