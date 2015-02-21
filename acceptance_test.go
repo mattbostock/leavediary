@@ -35,7 +35,7 @@ func TestAcceptanceTests(t *testing.T) {
 func (s *acceptanceTestSuite) SetupSuite() {
 	var err error
 
-	baseURL = fmt.Sprintf("https://%s", config.addr)
+	baseURL = fmt.Sprintf("https://%s/", config.addr)
 
 	config.gitHubClientID = "abc"
 	config.gitHubClientSecret = "xyz"
@@ -84,7 +84,9 @@ func (s *acceptanceTestSuite) TearDownSuite() {
 }
 
 func (s *acceptanceTestSuite) TestDebugVarsExposed() {
-	err := s.page.Navigate(baseURL + "/debug/vars")
+	testURL := baseURL + "debug/vars"
+	err := s.page.Navigate(testURL)
+
 	if err != nil {
 		s.T().Error(err)
 	}
@@ -94,12 +96,16 @@ func (s *acceptanceTestSuite) TestDebugVarsExposed() {
 		s.T().Error(err)
 	}
 
+	u, _ := s.page.URL()
+	assert.Equal(s.T(), testURL, u)
+
 	assert.Contains(s.T(), bodyText, "cmdline")
 	assert.Contains(s.T(), bodyText, "memstats")
 }
 
 func (s *acceptanceTestSuite) TestHomePageForJavascriptErrors() {
-	err := s.page.Navigate(baseURL)
+	testURL := baseURL
+	err := s.page.Navigate(testURL)
 	if err != nil {
 		s.T().Error(err)
 	}
@@ -109,6 +115,9 @@ func (s *acceptanceTestSuite) TestHomePageForJavascriptErrors() {
 		s.T().Error(err)
 	}
 
+	u, _ := s.page.URL()
+	assert.Equal(s.T(), testURL, u)
+
 	for _, log := range logs {
 		assert.NotEqual(s.T(), "WARNING", log.Level, log.Message)
 		assert.NotEqual(s.T(), "SEVERE", log.Level, log.Message)
@@ -116,7 +125,7 @@ func (s *acceptanceTestSuite) TestHomePageForJavascriptErrors() {
 }
 
 func (s *acceptanceTestSuite) TestPageNotFound() {
-	resp, err := http.Get(baseURL + "/non-existentent-page")
+	resp, err := http.Get(baseURL + "non-existentent-page")
 	if err != nil {
 		s.T().Error(err)
 	}
