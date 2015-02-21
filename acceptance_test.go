@@ -4,8 +4,11 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net/http"
+	"net/url"
 	"path/filepath"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/sclevine/agouti"
 	"github.com/stretchr/testify/assert"
@@ -52,6 +55,27 @@ func (s *acceptanceTestSuite) SetupSuite() {
 	// don't verify our development TLS certificates
 	http.DefaultTransport = &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	// Make sure server is actually running (see go main() call above) before
+	// running tests to avoid race conditions
+	for {
+		_, err := http.Get(baseURL)
+
+		if err == nil {
+			break
+		} else {
+			switch err.(type) {
+			case *url.Error:
+				if strings.HasSuffix(err.Error(), "connection refused") {
+					time.Sleep(500 * time.Millisecond)
+					continue
+				}
+			default:
+				s.T().Error(err)
+				break
+			}
+		}
 	}
 }
 
