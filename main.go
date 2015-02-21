@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"net/http"
 	"os"
+	"runtime"
 	"strings"
 
 	"github.com/Sirupsen/logrus"
@@ -51,6 +52,8 @@ var (
 )
 
 func init() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	if config.debug {
 		log.Level = logrus.DebugLevel
 	}
