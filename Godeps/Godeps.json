@@ -1,5 +1,5 @@
 {
-	"ImportPath": "gitlab.com/mattbostock/timeoff",
+	"ImportPath": "github.com/mattbostock/timeoff",
 	"GoVersion": "go1.4.1",
 	"Deps": [
 		{
@@ -77,6 +77,22 @@
 		{
 			"ImportPath": "github.com/unrolled/secure",
 			"Rev": "7c5d20f5d23b4825dfe542a006b37d6bdb5950f6"
+		},
+		{
+			"ImportPath": "gitlab.com/mattbostock/timeoff/handler",
+			"Rev": "2b1fb4b1b367aae6b77b540096c2776f02fcd3f0"
+		},
+		{
+			"ImportPath": "gitlab.com/mattbostock/timeoff/middleware/negroni_logrus",
+			"Rev": "2b1fb4b1b367aae6b77b540096c2776f02fcd3f0"
+		},
+		{
+			"ImportPath": "gitlab.com/mattbostock/timeoff/middleware/sessions",
+			"Rev": "2b1fb4b1b367aae6b77b540096c2776f02fcd3f0"
+		},
+		{
+			"ImportPath": "gitlab.com/mattbostock/timeoff/model",
+			"Rev": "2b1fb4b1b367aae6b77b540096c2776f02fcd3f0"
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",

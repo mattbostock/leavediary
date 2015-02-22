@@ -5,8 +5,9 @@ import (
 )
 
 type Org struct {
-	ID   uint64 `gorm:"column:id; primary_key:yes"`
-	Name string `sql:"type:text;"`
+	ID    uint64 `gorm:"column:id; primary_key:yes"`
+	Name  string `sql:"type:text;"`
+	Admin User
 	// default number of days leave for organisation
 	DefaultDays float64
 	CreatedAt   time.Time
