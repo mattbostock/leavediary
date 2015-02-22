@@ -27,7 +27,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 	})
 
-	url := OauthConfig.AuthCodeURL(state)
+	url := oauthConfig.AuthCodeURL(state)
 	user := currentUser(r)
 
 	output.HTML(w, http.StatusOK, "index", &struct {

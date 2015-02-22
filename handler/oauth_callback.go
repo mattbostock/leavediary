@@ -8,8 +8,6 @@ import (
 	"golang.org/x/oauth2"
 )
 
-var OauthConfig *oauth2.Config
-
 func GithubOauthCallback(w http.ResponseWriter, r *http.Request) {
 	code := r.URL.Query().Get("code")
 	state := r.URL.Query().Get("state")
@@ -27,14 +25,14 @@ func GithubOauthCallback(w http.ResponseWriter, r *http.Request) {
 		MaxAge: -1,
 	})
 
-	t, err := OauthConfig.Exchange(oauth2.NoContext, code)
+	t, err := oauthConfig.Exchange(oauth2.NoContext, code)
 	if err != nil {
 		log.Errorln("GitHub Oauth exchange failed: %s", err)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
-	httpClient := OauthConfig.Client(oauth2.NoContext, t)
+	httpClient := oauthConfig.Client(oauth2.NoContext, t)
 	githubClient := github.NewClient(httpClient)
 	user, _, err := githubClient.Users.Get("")
 

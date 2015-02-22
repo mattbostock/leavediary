@@ -83,12 +83,12 @@ func main() {
 		log.Fatalf(errNoGitHubCredentials)
 	}
 
-	handler.OauthConfig = &oauth2.Config{
+	handler.SetOauthConfig(&oauth2.Config{
 		ClientID:     config.gitHubClientID,
 		ClientSecret: config.gitHubClientSecret,
 		Endpoint:     github.Endpoint,
 		Scopes:       []string{"user:email"},
-	}
+	})
 
 	model.SetLogger(log)
 	model.InitDB("sqlite3", "sqlite.db")
