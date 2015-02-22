@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"path/filepath"
@@ -85,22 +86,21 @@ func (s *acceptanceTestSuite) TearDownSuite() {
 
 func (s *acceptanceTestSuite) TestDebugVarsExposed() {
 	testURL := baseURL + "debug/vars"
-	err := s.page.Navigate(testURL)
+	resp, err := http.Get(testURL)
+	if err != nil {
+		s.T().Error(err)
+	}
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		s.T().Error(err)
 	}
 
-	bodyText, err := s.page.Find("body").Text()
-	if err != nil {
-		s.T().Error(err)
-	}
-
-	u, _ := s.page.URL()
-	assert.Equal(s.T(), testURL, u)
-
-	assert.Contains(s.T(), bodyText, "cmdline")
-	assert.Contains(s.T(), bodyText, "memstats")
+	assert.Contains(s.T(), string(body), "cmdline")
+	assert.Contains(s.T(), string(body), "memstats")
 }
 
 func (s *acceptanceTestSuite) TestHomePageForJavascriptErrors() {
