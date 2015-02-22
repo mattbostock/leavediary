@@ -42,6 +42,7 @@ func (s *acceptanceTestSuite) SetupSuite() {
 	config.gitHubClientSecret = "xyz"
 	config.tlsCert = filepath.Join(fixturesPath, "cert.pem")
 	config.tlsKey = filepath.Join(fixturesPath, "key.pem")
+	// FIXME need to configure and clean up database
 
 	go main()
 
@@ -60,23 +61,9 @@ func (s *acceptanceTestSuite) SetupSuite() {
 
 	// Make sure server is actually running (see go main() call above) before
 	// running tests to avoid race conditions
-	for {
-		_, err := http.Get(baseURL)
-
-		if err == nil {
-			break
-		} else {
-			switch err.(type) {
-			case *url.Error:
-				if strings.HasSuffix(err.Error(), "connection refused") {
-					time.Sleep(500 * time.Millisecond)
-					continue
-				}
-			default:
-				s.T().Error(err)
-				break
-			}
-		}
+	err = waitForServer(baseURL)
+	if err != nil {
+		s.T().Error(err)
 	}
 }
 
@@ -131,4 +118,28 @@ func (s *acceptanceTestSuite) TestPageNotFound() {
 	}
 
 	assert.Equal(s.T(), http.StatusNotFound, resp.StatusCode)
+}
+
+func waitForServer(u string) error {
+	for {
+		_, err := http.Get(u)
+
+		if err == nil {
+			break
+		} else {
+			switch err.(type) {
+			case *url.Error:
+				if strings.HasSuffix(err.Error(), "connection refused") {
+					time.Sleep(500 * time.Millisecond)
+					continue
+				}
+				return err
+			default:
+				return err
+				break
+			}
+		}
+	}
+
+	return nil
 }
