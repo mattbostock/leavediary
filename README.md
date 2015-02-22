@@ -40,14 +40,24 @@ For a development environment:
 
 Currently in alpha. Many features are not yet implemented.
 
-### Features TODO
+### Roadmap
 
-- Annual leave
+#### Version 0.1 - MVP
+
+- Track annual leave (no approvals yet)
+- Annotations (e.g. "holiday to Spain")
+- Support for multiple organisations
+- First organisation user is the admin
+
+### Future TODO
+
+- Manager approvals (support concept of managers)
+- Welcome email
+- Google, LinkedIn Oauth login
+- Username/password login
 - Public holidays/bank holidays
 - Sickness
 - Time off in lieu (TOIL)
-- Managerial approvals
-- Annotations (e.g. "holiday to Spain")
 - Custom leave day types (e.g. privilege days)
 - Custom leave years (per-employee or global for whole company)
 - Reporting
