@@ -34,7 +34,7 @@ For a development environment:
     # Run the application with debug logging enabled
     # Replace the GitHub client ID and secret with your own:
     # https://github.com/settings/applications
-    DEBUG=1 ADDR=localhost:3000 TLS_CERT=cert.pem TLS_KEY=key.pem GITHUB_CLIENT_ID=abc GITHUB_CLIENT_SECRET=xyz./timeoff
+    DEBUG=1 ADDR=localhost:3000 TLS_CERT=cert.pem TLS_KEY=key.pem GITHUB_CLIENT_ID=abc GITHUB_CLIENT_SECRET=xyz ./timeoff
 
 ## Project status
 
