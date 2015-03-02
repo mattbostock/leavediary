@@ -88,6 +88,8 @@ func main() {
 		log.Fatalf(errNoGitHubCredentials)
 	}
 
+	handler.SetVersion(version)
+
 	handler.SetOauthConfig(&oauth2.Config{
 		ClientID:     config.gitHubClientID,
 		ClientSecret: config.gitHubClientSecret,
