@@ -47,8 +47,8 @@ var (
 		tlsKey:             os.Getenv("TLS_KEY"),
 	}
 
-	mux = pat.New()
-	log = logrus.New()
+	mux     = pat.New()
+	log     = logrus.New()
 	version = ""
 )
 
