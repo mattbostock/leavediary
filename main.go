@@ -49,6 +49,7 @@ var (
 
 	mux = pat.New()
 	log = logrus.New()
+	version = ""
 )
 
 func init() {
@@ -64,6 +65,10 @@ func init() {
 }
 
 func main() {
+	if version == "" {
+		log.Fatalln(errMakeFileNotUsed)
+	}
+
 	if os.Getenv("ALLOWED_HOSTS") == "" {
 		config.allowedHosts = nil
 	} else {
@@ -143,6 +148,8 @@ const (
 	errAllHostsEnabled = "Accepting connections for all HTTP hosts. Consider setting the ALLOWED_HOSTS environment variable."
 
 	errCookieHashKeyWrongLength = "COOKIE_KEY environment variable must be 32 characters long. Length provided: %d"
+
+	errMakeFileNotUsed = "Makefile was not used when compiling binary, run 'make' to re-compile"
 
 	errNoCookieHashKey = "No cookie hash key supplied. You should set the COOKIE_KEY " +
 		"environment variable in a production environment. Falling back to use a temporary key " +
