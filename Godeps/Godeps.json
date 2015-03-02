@@ -8,6 +8,10 @@
 			"Rev": "0ae53775f7736dbe9bbccbedb3c408f13ce5282e"
 		},
 		{
+			"ImportPath": "github.com/bmizerany/pat",
+			"Rev": "b8a35001b773c267eb260a691f4e5499a3531600"
+		},
+		{
 			"ImportPath": "github.com/bradfitz/http2",
 			"Rev": "07ee680c590192a80b5e6bacc06d422aa2c40dfa"
 		},
@@ -23,18 +27,6 @@
 		{
 			"ImportPath": "github.com/google/go-querystring/query",
 			"Rev": "d8840cbb2baa915f4836edda4750050a2c0b7aea"
-		},
-		{
-			"ImportPath": "github.com/gorilla/context",
-			"Rev": "50c25fb3b2b3b3cc724e9b6ac75fb44b3bccd0da"
-		},
-		{
-			"ImportPath": "github.com/gorilla/mux",
-			"Rev": "e444e69cbd2e2e3e0749a2f3c717cec491552bbf"
-		},
-		{
-			"ImportPath": "github.com/gorilla/pat",
-			"Rev": "ae2e162c4b2ae96aa66b596b2c18f17834299ed0"
 		},
 		{
 			"ImportPath": "github.com/gorilla/securecookie",

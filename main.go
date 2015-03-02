@@ -10,9 +10,9 @@ import (
 	"strings"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/bmizerany/pat"
 	"github.com/bradfitz/http2"
 	"github.com/codegangsta/negroni"
-	"github.com/gorilla/pat"
 	"github.com/gorilla/securecookie"
 	"github.com/unrolled/secure"
 	"gitlab.com/mattbostock/timeoff/handler"

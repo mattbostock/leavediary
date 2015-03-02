@@ -8,14 +8,12 @@ import (
 )
 
 func registerRoutes() {
-	mux.NotFoundHandler = http.NotFoundHandler()
-
 	// Expose `expvar` debug variables
-	mux.Handle("/debug/vars", http.DefaultServeMux)
+	mux.Get("/debug/vars", http.DefaultServeMux)
 
-	mux.Get("/oauth/github/callback", handler.GithubOauthCallback)
-	mux.Get("/dashboard", handler.Dashboard)
-	mux.Get("/logout", handler.Logout)
+	mux.Get("/oauth/github/callback", http.HandlerFunc(handler.GithubOauthCallback))
+	mux.Get("/dashboard", http.HandlerFunc(handler.Dashboard))
+	mux.Get("/logout", http.HandlerFunc(handler.Logout))
 
-	mux.Handle("/", http.HandlerFunc(handler.Index))
+	mux.Get("/", http.HandlerFunc(handler.Index))
 }
