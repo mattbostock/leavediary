@@ -46,21 +46,28 @@ Currently in alpha. Many features are not yet implemented.
 
 - Track annual leave (no approvals yet)
 - Annotations (e.g. "holiday to Spain")
-- Support for multiple organisations
-- First organisation user is the admin
+- Adjustments (rolled-over allowance)
+
+Limitations/assumptions:
+
+- one, full time, job
 
 ### Future TODO
 
-- Manager approvals (support concept of managers)
+- Sharing (read-only view)
+- Approvals for holiday requests
+- Ability to change leave year
+- ICAL export (including leave for those who have shared it)
+- CSV export
+- JSON export
+- Support for multiple jobs
+- Manager request approvals
 - Welcome email
-- Google, LinkedIn Oauth login
-- Username/password login
+- Google Oauth login
 - Public holidays/bank holidays
 - Sickness
-- Time off in lieu (TOIL)
+- Payment in lieu (above statutory minimum)
 - Custom leave day types (e.g. privilege days)
-- Custom leave years (per-employee or global for whole company)
-- Reporting
 - Notifications to employee and manager to notify of time not taken, nearing end of year, etc.
 - Currently assumes full time, need to allow for part-time
 
