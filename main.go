@@ -2,6 +2,8 @@ package main
 
 import (
 	"crypto/tls"
+	"flag"
+	"fmt"
 	"net/http"
 	"os"
 	"runtime"
@@ -67,6 +69,14 @@ func init() {
 func main() {
 	if version == "" {
 		log.Fatalln(errMakeFileNotUsed)
+	}
+
+	v := flag.Bool("version", false, "prints current version")
+	flag.Parse()
+
+	if *v {
+		fmt.Println(version)
+		os.Exit(0)
 	}
 
 	if os.Getenv("ALLOWED_HOSTS") == "" {
