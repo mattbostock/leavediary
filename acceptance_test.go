@@ -136,7 +136,6 @@ func waitForServer(u string) error {
 				return err
 			default:
 				return err
-				break
 			}
 		}
 	}
