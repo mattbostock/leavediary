@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mattbostock/timeoff.svg?branch=master)](https://travis-ci.org/mattbostock/timeoff)
+
 # TimeOff
 
 TimeOff is a web application for tracking a worker's annual leave (vacation and public holidays),
