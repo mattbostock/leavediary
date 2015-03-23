@@ -12,8 +12,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	randStr := make([]byte, 12)
 	_, err := rand.Read(randStr)
 	if err != nil {
-		log.Errorf("Couldn't generate Oauth state: %s", err)
-		showError(w, "An error has occurred", http.StatusInternalServerError)
+		internalError(w, err)
 		return
 	}
 	state := base64.StdEncoding.EncodeToString(randStr)

@@ -7,6 +7,18 @@ import (
 	"github.com/nbio/httpcontext"
 )
 
+func internalError(w http.ResponseWriter, err error) {
+	log.Error(err)
+	output.HTML(w, http.StatusInternalServerError, "error",
+		&struct {
+			Msg  string
+			User model.User
+		}{
+			"",
+			model.User{},
+		})
+}
+
 func showError(w http.ResponseWriter, statusCode int, msg string) {
 	output.HTML(w, statusCode, "error",
 		&struct {
