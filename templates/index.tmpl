@@ -7,6 +7,8 @@
 <div class="row">
 <div class="large-12 columns">
 {{ if not .User.ID }}
+  <p>Click the 'Login' button to get started.</p>
+
   <a role="button" href="{{ .GitHubOauthURL }}" class="button large github-icon">Login with GitHub</a>
 {{ else }}
   <a role="button" href="/dashboard" class="button large">Go to dashboard</a>
