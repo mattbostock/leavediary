@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/mattbostock/timeoff.svg?branch=master)](https://travis-ci.org/mattbostock/timeoff)
+[![Go Report Card](http://goreportcard.com/badge/mattbostock/timeoff)](http://goreportcard.com/report/mattbostock/timeoff)
 
 # TimeOff
 
