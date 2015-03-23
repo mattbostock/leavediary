@@ -11,7 +11,6 @@ type Job struct {
 	EndDate    time.Time `sql:"DEFAULT:null"`
 	LeaveYears []LeaveYear
 	LeaveAlloc []LeaveAlloc
-	Managees   []User
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	DeletedAt  time.Time
