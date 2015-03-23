@@ -8,7 +8,7 @@ sickness and time in lieu.
 
 ## Project status
 
-TimeOff is __currently alpha-quality__ software. Not yet recommended for serious use.
+TimeOff is __currently incomplete and alpha-quality__ software. Not yet recommended for serious use.
 
 ## Requirements
 
