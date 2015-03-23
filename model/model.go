@@ -39,7 +39,7 @@ type User struct {
 	GitHubID  uint64
 	Email     string `sql:"type:text;"`
 	TimeZone  int
-	Jobs      []Job `gorm:"many2many:users_employments;"`
+	Jobs      []Job
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt time.Time
