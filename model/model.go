@@ -5,24 +5,12 @@ import (
 	"time"
 )
 
-type Org struct {
-	ID    uint64 `gorm:"column:id; primary_key:yes"`
-	Name  string `sql:"type:text;"`
-	Admin User
-	// default number of days leave for organisation
-	DefaultDays float64
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   time.Time
-}
-
 type Job struct {
 	ID         uint64    `gorm:"column:id; primary_key:yes"`
 	JoinDate   time.Time `sql:"DEFAULT:null"`
 	EndDate    time.Time `sql:"DEFAULT:null"`
 	LeaveYears []LeaveYear
 	LeaveAlloc []LeaveAlloc
-	Org        Org
 	Managees   []User
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
