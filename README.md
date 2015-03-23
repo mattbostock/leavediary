@@ -51,11 +51,14 @@ Currently in alpha. Many features are not yet implemented.
 Limitations/assumptions:
 
 - one, full time, job
+- assumes public holidays are not included in leave
+- time off cannot span leave periods
 
 ### Future TODO
 
 - Sharing (read-only view)
-- Approvals for holiday requests
+- Approvals for holiday requests (with ability to see who else is off at same time)
+- Time off that can span leave periods (i.e. by designating which dates count as time off)
 - Ability to change leave year
 - ICAL export (including leave for those who have shared it)
 - CSV export
@@ -70,3 +73,10 @@ Limitations/assumptions:
 - Custom leave day types (e.g. privilege days)
 - Notifications to employee and manager to notify of time not taken, nearing end of year, etc.
 - Currently assumes full time, need to allow for part-time
+- Hide shared leave you no longer wish to see
+- Record training days
+- Approvals using Google Calendar invites
+- Show calendar of dates chosen when adding time off
+- Ability to reset shared secret (e.g. for .ics export)
+- Caching
+- Figure out how to log errors from unrolled/render
