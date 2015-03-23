@@ -3,6 +3,10 @@
 TimeOff is a web application for tracking a worker's annual leave (vacation and public holidays),
 sickness and time in lieu.
 
+## Project status
+
+TimeOff is __currently alpha-quality__ software. Not yet recommended for serious use.
+
 ## Requirements
 
 ### TLS
@@ -36,13 +40,9 @@ For a development environment:
     # https://github.com/settings/applications
     DEBUG=1 ADDR=localhost:3000 TLS_CERT=cert.pem TLS_KEY=key.pem GITHUB_CLIENT_ID=abc GITHUB_CLIENT_SECRET=xyz ./timeoff
 
-## Project status
+## Roadmap
 
-Currently in alpha. Many features are not yet implemented.
-
-### Roadmap
-
-#### Version 0.1 - MVP
+### Version 0.1 - MVP
 
 - Track annual leave (no approvals yet)
 - Annotations (e.g. "holiday to Spain")
