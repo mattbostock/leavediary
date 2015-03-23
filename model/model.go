@@ -18,14 +18,6 @@ type Job struct {
 	DeletedAt time.Time
 }
 
-type LeaveRequest struct {
-	ID          uint64 `gorm:"column:id; primary_key:yes"`
-	AddedBy     User
-	Days        float64
-	Description string
-	StartDate   time.Time `sql:"DEFAULT:null"`
-}
-
 type LeaveAllowance struct {
 	ID        uint64    `gorm:"column:id; primary_key:yes"`
 	StartDate time.Time `sql:"DEFAULT:null"`
@@ -33,6 +25,14 @@ type LeaveAllowance struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt time.Time
+}
+
+type LeaveRequest struct {
+	ID          uint64 `gorm:"column:id; primary_key:yes"`
+	AddedBy     User
+	Days        float64
+	Description string
+	StartDate   time.Time `sql:"DEFAULT:null"`
 }
 
 type User struct {
