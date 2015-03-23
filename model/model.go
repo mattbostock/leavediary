@@ -36,12 +36,13 @@ type LeaveYear struct {
 }
 
 type User struct {
-	ID        uint64 `gorm:"column:id; primary_key:yes"`
-	Name      string `sql:"type:text;"`
-	GitHubID  uint64
-	Email     string `sql:"type:text;"`
-	TimeZone  int
-	Jobs      []Job
+	ID       uint64 `gorm:"column:id; primary_key:yes"`
+	Name     string `sql:"type:text;"`
+	GitHubID uint64
+	Email    string `sql:"type:text;"`
+	TZOffset int16  // time zone as seconds east of UTC
+	Jobs     []Job
+
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt time.Time
