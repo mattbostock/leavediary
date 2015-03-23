@@ -15,7 +15,6 @@ func InitDB(driver, database string) {
 	var err error
 
 	db, err = gorm.Open(driver, database)
-
 	if err != nil {
 		panic(err)
 	}
