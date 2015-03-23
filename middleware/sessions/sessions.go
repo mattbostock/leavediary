@@ -38,13 +38,13 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if userID < 1 {
-		log.Errorf("User ID with value %v found in cookie", &userID)
+		log.Errorf("User ID with value %v found in cookie", userID)
 		return
 	}
 
 	user, err := model.FindUser(userID)
 	if err != nil {
-		log.Errorf("User ID %v not found in database", &userID)
+		log.Errorf("User ID %v not found in database", userID)
 		return
 	}
 
