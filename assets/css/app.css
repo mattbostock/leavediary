@@ -9,9 +9,9 @@ html.backgroundsize .github-icon {
 
 /* FIXME: Target desktop browsers more elegantly rather than notouch class */
 html.notouch, html.no-touch body {
-  font-size: 110% !important;
+  font-size: 110%;
 }
 
 .top-bar {
-  margin-bottom: 1rem !important;
+  margin-bottom: 1rem;
 }
