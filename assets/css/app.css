@@ -3,13 +3,13 @@ html.notouch, html.no-touch body {
   font-size: 110%;
 }
 
-.top-bar {
-  margin-bottom: 1rem;
-}
-
 footer {
   color: #848484;
   padding: 2rem 0;
+}
+
+.top-bar {
+  margin-bottom: 2rem;
 }
 
 html.backgroundsize .github-icon {
