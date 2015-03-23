@@ -7,8 +7,15 @@ import (
 	"github.com/nbio/httpcontext"
 )
 
-func showError(w http.ResponseWriter, msg string, statusCode int) {
-	output.HTML(w, statusCode, "error", msg)
+func showError(w http.ResponseWriter, statusCode int, msg string) {
+	output.HTML(w, statusCode, "error",
+		&struct {
+			Msg  string
+			User model.User
+		}{
+			msg,
+			model.User{},
+		})
 }
 
 func currentUser(r *http.Request) model.User {
