@@ -16,7 +16,7 @@ type Org struct {
 	DeletedAt   time.Time
 }
 
-type Employment struct {
+type Job struct {
 	ID         uint64    `gorm:"column:id; primary_key:yes"`
 	JoinDate   time.Time `sql:"DEFAULT:null"`
 	EndDate    time.Time `sql:"DEFAULT:null"`
@@ -47,16 +47,16 @@ type LeaveYear struct {
 }
 
 type User struct {
-	ID          uint64 `gorm:"column:id; primary_key:yes"`
-	Name        string `sql:"type:text;"`
-	GitHubID    uint64
-	Email       string `sql:"type:text;"`
-	JobTitle    string `sql:"type:text;"`
-	TimeZone    int
-	Employments []Employment `gorm:"many2many:users_employments;"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   time.Time
+	ID        uint64 `gorm:"column:id; primary_key:yes"`
+	Name      string `sql:"type:text;"`
+	GitHubID  uint64
+	Email     string `sql:"type:text;"`
+	JobTitle  string `sql:"type:text;"`
+	TimeZone  int
+	Jobs      []Job `gorm:"many2many:users_employments;"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt time.Time
 }
 
 func (u *User) UpdateOrCreate() error {

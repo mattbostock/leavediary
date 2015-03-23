@@ -23,10 +23,10 @@ func InitDB(driver, database string) {
 	db.LogMode(true)
 	db.SetLogger(&debugLogger{})
 
-	db.AutoMigrate(&Employment{}, &LeaveYear{}, &Org{}, &User{})
+	db.AutoMigrate(&Job{}, &LeaveYear{}, &Org{}, &User{})
 
-	db.Model(&Employment{}).AddIndex("id", "id")
-	db.Model(&Employment{}).AddIndex("deleted_at", "deleted_at")
+	db.Model(&Job{}).AddIndex("id", "id")
+	db.Model(&Job{}).AddIndex("deleted_at", "deleted_at")
 
 	db.Model(&LeaveAlloc{}).AddIndex("start_date", "start_date")
 	db.Model(&LeaveAlloc{}).AddIndex("deleted_at", "deleted_at")

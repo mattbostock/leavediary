@@ -15,8 +15,8 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	output.HTML(w, http.StatusOK, "dashboard", &struct {
-		User        model.User
-		Employments []model.Employment
+		User model.User
+		Jobs []model.Job
 	}{
 		user,
 		nil,
