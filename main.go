@@ -4,11 +4,15 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"runtime"
+	"strconv"
 	"strings"
 
+	"github.com/PuerkitoBio/throttled"
+	"github.com/PuerkitoBio/throttled/store"
 	"github.com/Sirupsen/logrus"
 	"github.com/bmizerany/pat"
 	"github.com/bradfitz/http2"
@@ -37,6 +41,7 @@ var (
 		debug              bool
 		gitHubClientID     string
 		gitHubClientSecret string
+		rateLimitPerMin    uint8
 		tlsCert            string
 		tlsKey             string
 	}{
@@ -63,6 +68,13 @@ func init() {
 
 	if config.addr == "" {
 		config.addr = defaultAddr
+	}
+
+	rate, _ := strconv.ParseUint(os.Getenv("RATE_LIMIT_PER_MIN"), 10, 8)
+	config.rateLimitPerMin = uint8(rate)
+
+	if rate == 0 {
+		config.rateLimitPerMin = 240
 	}
 }
 
@@ -135,6 +147,17 @@ func main() {
 	n.UseHandler(mux)
 	registerRoutes()
 
+	// throttle requests by remote IP though X-Forwarded-For could be spoofed
+	varyHost := func(r *http.Request) string {
+		host, _, _ := net.SplitHostPort(r.RemoteAddr)
+		return host + r.Header.Get("X-Forwarded-For")
+	}
+
+	t := throttled.RateLimit(throttled.PerMin(config.rateLimitPerMin), &throttled.VaryBy{Custom: varyHost}, store.NewMemStore(1000))
+	t.DeniedHandler = http.HandlerFunc(handler.TooManyRequests)
+	log.Infof("Throttling requests at %d per minute per remote IP address", config.rateLimitPerMin)
+	h := t.Throttle(n)
+
 	log.Infof("Listening on %s", config.addr)
 
 	if config.allowedHosts != nil {
@@ -144,7 +167,7 @@ func main() {
 	}
 
 	c := &tls.Config{MinVersion: tls.VersionTLS10} // disable SSLv3, prevent POODLE attack
-	s := &http.Server{Addr: config.addr, Handler: n, TLSConfig: c}
+	s := &http.Server{Addr: config.addr, Handler: h, TLSConfig: c}
 
 	if config.tlsCert == "" && config.tlsKey == "" {
 		log.Warningln(errNoTLSCertificate)

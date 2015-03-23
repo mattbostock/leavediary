@@ -3,6 +3,10 @@
 	"GoVersion": "go1.4.2",
 	"Deps": [
 		{
+			"ImportPath": "github.com/PuerkitoBio/throttled",
+			"Rev": "1c8297c643b774435df8df65f7502b37d014fb6b"
+		},
+		{
 			"ImportPath": "github.com/Sirupsen/logrus",
 			"Comment": "v0.6.1-12-g0ae5377",
 			"Rev": "0ae53775f7736dbe9bbccbedb3c408f13ce5282e"
@@ -19,6 +23,18 @@
 			"ImportPath": "github.com/codegangsta/negroni",
 			"Comment": "v0.1-51-g2b6e86b",
 			"Rev": "2b6e86bff68451fcd38bd9e2da90e0b70e85983d"
+		},
+		{
+			"ImportPath": "github.com/garyburd/redigo/internal",
+			"Rev": "cca3df8fa0670249a3f746bcc062c69aeba0517c"
+		},
+		{
+			"ImportPath": "github.com/garyburd/redigo/redis",
+			"Rev": "cca3df8fa0670249a3f746bcc062c69aeba0517c"
+		},
+		{
+			"ImportPath": "github.com/golang/groupcache/lru",
+			"Rev": "604ed5785183e59ae2789449d89e73f3a2a77987"
 		},
 		{
 			"ImportPath": "github.com/google/go-github/github",
