@@ -5,3 +5,6 @@ build:
 
 test:
 	go test -cover ./...
+
+run:	build
+	./timeoff
