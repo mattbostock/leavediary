@@ -51,7 +51,6 @@ type User struct {
 	Name      string `sql:"type:text;"`
 	GitHubID  uint64
 	Email     string `sql:"type:text;"`
-	JobTitle  string `sql:"type:text;"`
 	TimeZone  int
 	Jobs      []Job `gorm:"many2many:users_employments;"`
 	CreatedAt time.Time
