@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"github.com/nbio/httpcontext"
-	"gitlab.com/mattbostock/timeoff/model"
 	"net/http"
+
+	"github.com/mattbostock/timeoff/model"
+	"github.com/nbio/httpcontext"
 )
 
 func showError(w http.ResponseWriter, msg string, statusCode int) {

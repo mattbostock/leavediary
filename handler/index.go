@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"net/http"
 
-	"gitlab.com/mattbostock/timeoff/model"
+	"github.com/mattbostock/timeoff/model"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {

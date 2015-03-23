@@ -5,8 +5,8 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/securecookie"
+	"github.com/mattbostock/timeoff/middleware/sessions"
 	"github.com/stretchr/testify/suite"
-	"gitlab.com/mattbostock/timeoff/middleware/sessions"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )

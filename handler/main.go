@@ -4,8 +4,8 @@ import (
 	"html/template"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/mattbostock/timeoff/middleware/sessions"
 	"github.com/unrolled/render"
-	"gitlab.com/mattbostock/timeoff/middleware/sessions"
 	"golang.org/x/oauth2"
 )
 

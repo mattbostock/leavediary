@@ -4,7 +4,7 @@ import (
 	_ "expvar"
 	"net/http"
 
-	"gitlab.com/mattbostock/timeoff/handler"
+	"github.com/mattbostock/timeoff/handler"
 )
 
 func registerRoutes() {

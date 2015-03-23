@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/google/go-github/github"
-	"gitlab.com/mattbostock/timeoff/model"
+	"github.com/mattbostock/timeoff/model"
 	"golang.org/x/oauth2"
 )
 

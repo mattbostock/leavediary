@@ -7,8 +7,8 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/securecookie"
+	"github.com/mattbostock/timeoff/model"
 	"github.com/nbio/httpcontext"
-	"gitlab.com/mattbostock/timeoff/model"
 )
 
 var log *logrus.Logger

@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"gitlab.com/mattbostock/timeoff/model"
+	"github.com/mattbostock/timeoff/model"
 )
 
 func Dashboard(w http.ResponseWriter, r *http.Request) {
