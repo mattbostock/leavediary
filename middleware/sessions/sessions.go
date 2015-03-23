@@ -30,7 +30,7 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	s := securecookie.New(m.hashKey, m.hashKey)
 
-	var userID int64
+	var userID uint64
 	err = s.Decode(m.sessionName, cookie.Value, &userID)
 	if err != nil {
 		log.Debugln(err)

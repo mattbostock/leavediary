@@ -74,7 +74,7 @@ func (u *User) UpdateOrCreate() error {
 	return res.Error
 }
 
-func FindUser(id int64) (user User, err error) {
+func FindUser(id uint64) (user User, err error) {
 	res := db.First(&user, id)
 	return user, res.Error
 }

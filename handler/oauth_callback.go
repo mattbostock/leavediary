@@ -61,7 +61,7 @@ func GithubOauthCallback(w http.ResponseWriter, r *http.Request) {
 
 	u.UpdateOrCreate()
 
-	err = sessionManager.SetCookie(w, int64(u.ID))
+	err = sessionManager.SetCookie(w, uint64(u.ID))
 	if err != nil {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
