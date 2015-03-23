@@ -6,11 +6,12 @@ import (
 )
 
 type Job struct {
-	ID         uint64 `gorm:"column:id; primary_key:yes"`
-	StartTime  time.Time `sql:"DEFAULT:null"`
-	EndTime    time.Time `sql:"DEFAULT:null"`
-	LeaveYears []LeaveYear
-	LeaveAlloc []LeaveAlloc
+	ID           uint64 `gorm:"column:id; primary_key:yes"`
+	StartTime    time.Time `sql:"DEFAULT:null"`
+	EndTime      time.Time `sql:"DEFAULT:null"`
+	EmployerName string
+	LeaveYears   []LeaveYear
+	LeaveAlloc   []LeaveAlloc
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
