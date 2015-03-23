@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"time"
 )
 
@@ -48,6 +49,7 @@ type LeaveYear struct {
 type User struct {
 	ID          uint64 `gorm:"column:id; primary_key:yes"`
 	Name        string `sql:"type:text;"`
+	GitHubID    uint64
 	Email       string `sql:"type:text;"`
 	JobTitle    string `sql:"type:text;"`
 	TimeZone    int
@@ -58,11 +60,12 @@ type User struct {
 }
 
 func (u *User) UpdateOrCreate() error {
-	// FIXME: Can we always trust Oauth providers to provide a correct, verified email address?
-	// I.e. to prevent user spoofing
-	// Or match against Oauth user ID, e.g. GitHub user ID?
+	if u.GitHubID == 0 {
+		return errors.New("GitHub user ID was set to zero; cannot match")
+	}
 
-	res := db.Where(User{Email: u.Email}).FirstOrInit(u)
+	res := db.Where(User{GitHubID: u.GitHubID}).FirstOrInit(u)
+
 	if res.Error != nil {
 		return res.Error
 	}
