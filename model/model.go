@@ -31,7 +31,6 @@ type LeaveAllowance struct {
 
 type LeaveRequest struct {
 	ID          uint64 `gorm:"column:id; primary_key:yes"`
-	AddedBy     User
 	Days        float64
 	Description string
 	StartTime   time.Time `sql:"DEFAULT:null"`
