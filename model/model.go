@@ -34,7 +34,8 @@ type LeaveRequest struct {
 	AddedBy     User
 	Days        float64
 	Description string
-	StartDate   time.Time `sql:"DEFAULT:null"`
+	StartTime   time.Time `sql:"DEFAULT:null"`
+	EndTime     time.Time `sql:"DEFAULT:null"`
 }
 
 type User struct {
