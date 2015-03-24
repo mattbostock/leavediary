@@ -6,7 +6,7 @@ import (
 )
 
 type Job struct {
-	ID              uint64 `gorm:"column:id; primary_key:yes"`
+	ID              uint64    `gorm:"column:id; primary_key:yes"`
 	StartTime       time.Time `sql:"DEFAULT:null"`
 	EndTime         time.Time `sql:"DEFAULT:null"`
 	EmployerName    string
