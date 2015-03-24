@@ -21,7 +21,8 @@ type Job struct {
 
 type LeaveAllowance struct {
 	ID        uint64    `gorm:"column:id; primary_key:yes"`
-	StartDate time.Time `sql:"DEFAULT:null"`
+	StartTime time.Time `sql:"DEFAULT:null"`
+	EndTime   time.Time `sql:"DEFAULT:null"`
 	Days      float64
 	CreatedAt time.Time
 	UpdatedAt time.Time
