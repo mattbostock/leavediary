@@ -27,7 +27,7 @@ func GithubOauthCallback(w http.ResponseWriter, r *http.Request) {
 
 	t, err := oauthConfig.Exchange(oauth2.NoContext, code)
 	if err != nil {
-		log.Errorln("GitHub Oauth exchange failed: %s", err)
+		log.Errorf("GitHub Oauth exchange failed: %s", err)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
