@@ -41,9 +41,8 @@ func GithubOauthCallback(w http.ResponseWriter, r *http.Request) {
 	// Get authenticated user based on Oauth token provided in HTTP client config
 	// An empty string means get the authenticated user
 	user, _, err := githubClient.Users.Get("")
-
 	if err != nil {
-		log.Infoln("Authentication failed")
+		log.Infof("GitHub authentication failed: %s", err)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
