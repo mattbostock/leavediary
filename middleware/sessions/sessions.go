@@ -44,7 +44,7 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	user, err := model.FindUser(userID)
 	if err != nil {
-		log.Errorf("User ID %v not found in database", userID)
+		log.Errorf("Cookie user ID %v not found in database", userID)
 		return
 	}
 
