@@ -6,6 +6,7 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/securecookie"
+	"github.com/mattbostock/timeoff/handler/mocks/logrus"
 	"github.com/mattbostock/timeoff/middleware/sessions"
 	"github.com/mattbostock/timeoff/model"
 	"github.com/stretchr/testify/suite"
@@ -15,6 +16,7 @@ import (
 
 type handlerTestSuite struct {
 	suite.Suite
+	log *mockhook.Mockhook
 }
 
 func TestHandlerTests(t *testing.T) {
@@ -23,6 +25,9 @@ func TestHandlerTests(t *testing.T) {
 
 func (s *handlerTestSuite) SetupTest() {
 	log = logrus.New()
+	s.log = &mockhook.Mockhook{}
+	log.Hooks.Add(s.log)
+
 	oauthConfig = &oauth2.Config{
 		ClientID:     "abc",
 		ClientSecret: "xyz",
