@@ -26,20 +26,20 @@ func InitDB(driver, database string) {
 
 	db.AutoMigrate(&Job{}, &LeaveAllowance{}, &LeaveRequest{}, &User{})
 
-	db.Model(&Job{}).AddIndex("start_time", "start_time")
-	db.Model(&Job{}).AddIndex("end_time", "end_time")
-	db.Model(&Job{}).AddIndex("deleted_at", "deleted_at")
+	db.Model(&Job{}).AddIndex("job_start_time", "start_time")
+	db.Model(&Job{}).AddIndex("job_end_time", "end_time")
+	db.Model(&Job{}).AddIndex("job_deleted_at", "deleted_at")
 
-	db.Model(&LeaveAllowance{}).AddIndex("start_time", "start_time")
-	db.Model(&LeaveAllowance{}).AddIndex("end_time", "end_time")
-	db.Model(&LeaveAllowance{}).AddIndex("deleted_at", "deleted_at")
+	db.Model(&LeaveAllowance{}).AddIndex("leave_allowance_start_time", "start_time")
+	db.Model(&LeaveAllowance{}).AddIndex("leave_allowance_end_time", "end_time")
+	db.Model(&LeaveAllowance{}).AddIndex("leave_allowance_deleted_at", "deleted_at")
 
-	db.Model(&LeaveRequest{}).AddIndex("start_time", "start_time")
-	db.Model(&LeaveRequest{}).AddIndex("end_time", "end_time")
-	db.Model(&LeaveRequest{}).AddIndex("deleted_at", "deleted_at")
+	db.Model(&LeaveRequest{}).AddIndex("leave_request_start_time", "start_time")
+	db.Model(&LeaveRequest{}).AddIndex("leave_request_end_time", "end_time")
+	db.Model(&LeaveRequest{}).AddIndex("leave_request_deleted_at", "deleted_at")
 
-	db.Model(&User{}).AddIndex("email", "email")
-	db.Model(&User{}).AddIndex("deleted_at", "deleted_at")
+	db.Model(&User{}).AddIndex("user_email", "email")
+	db.Model(&User{}).AddIndex("user_deleted_at", "deleted_at")
 }
 
 func SetLogger(l *logrus.Logger) {
