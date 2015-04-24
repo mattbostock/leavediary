@@ -15,4 +15,3 @@ notifications:
 
 # Enable faster container builds: http://docs.travis-ci.com/user/workers/container-based-infrastructure/
 sudo: false
-
