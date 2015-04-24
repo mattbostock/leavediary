@@ -4,6 +4,16 @@ go:
   - "1.4.2"
   - "tip"
 
+env:
+  - # test using defaults
+  - DB_DIALECT="postgres" DB_DATASOURCE="host=127.0.0.1 user=postgres dbname=timeoff_test sslmode=disable"
+
+addons:
+  postgresql: "9.4"
+
+before_script:
+  psql -c "CREATE DATABASE timeoff_test;" -U postgres
+
 matrix:
   allow_failures:
     - go: "tip"
