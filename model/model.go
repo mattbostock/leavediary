@@ -20,11 +20,12 @@ type Job struct {
 }
 
 type LeaveAllowance struct {
-	ID          uint64    `gorm:"column:id; primary_key:yes"`
-	StartTime   time.Time `sql:"DEFAULT:null"`
-	EndTime     time.Time `sql:"DEFAULT:null"`
-	Minutes     int32
-	Description string
+	ID           uint64    `gorm:"column:id; primary_key:yes"`
+	StartTime    time.Time `sql:"DEFAULT:null"`
+	EndTime      time.Time `sql:"DEFAULT:null"`
+	Minutes      int32
+	Description  string
+	IsAdjustment bool
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
