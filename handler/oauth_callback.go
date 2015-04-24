@@ -38,6 +38,8 @@ func GithubOauthCallback(w http.ResponseWriter, r *http.Request) {
 	// set this explicitly as we'll override it in tests
 	githubClient.BaseURL = githubAPIBaseURL
 
+	// Get authenticated user based on Oauth token provided in HTTP client config
+	// An empty string means get the authenticated user
 	user, _, err := githubClient.Users.Get("")
 
 	if err != nil {
