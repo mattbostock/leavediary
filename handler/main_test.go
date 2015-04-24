@@ -21,7 +21,7 @@ func TestHandlerTests(t *testing.T) {
 	suite.Run(t, new(handlerTestSuite))
 }
 
-func (s *handlerTestSuite) SetupSuite() {
+func (s *handlerTestSuite) SetupTest() {
 	log = logrus.New()
 	oauthConfig = &oauth2.Config{
 		ClientID:     "abc",
