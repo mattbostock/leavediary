@@ -26,7 +26,6 @@ func InitDB(driver, database string) {
 
 	db.AutoMigrate(&Job{}, &LeaveAllowance{}, &LeaveRequest{}, &User{})
 
-	db.Model(&Job{}).AddIndex("id", "id")
 	db.Model(&Job{}).AddIndex("start_time", "start_time")
 	db.Model(&Job{}).AddIndex("end_time", "end_time")
 	db.Model(&Job{}).AddIndex("deleted_at", "deleted_at")
@@ -39,7 +38,6 @@ func InitDB(driver, database string) {
 	db.Model(&LeaveRequest{}).AddIndex("end_time", "end_time")
 	db.Model(&LeaveRequest{}).AddIndex("deleted_at", "deleted_at")
 
-	db.Model(&User{}).AddIndex("id", "id")
 	db.Model(&User{}).AddIndex("email", "email")
 	db.Model(&User{}).AddIndex("deleted_at", "deleted_at")
 }
