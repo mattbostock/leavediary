@@ -39,6 +39,8 @@ var (
 		allowedHosts       []string
 		cookieHashKey      []byte
 		debug              bool
+		dbDialect          string
+		dbDataSource       string
 		gitHubClientID     string
 		gitHubClientSecret string
 		rateLimitPerMin    uint8
@@ -47,6 +49,8 @@ var (
 	}{
 		addr:               os.Getenv("ADDR"),
 		cookieHashKey:      []byte(os.Getenv("COOKIE_KEY")),
+		dbDialect:          os.Getenv("DB_DIALECT"),
+		dbDataSource:       os.Getenv("DB_DATASOURCE"),
 		debug:              os.Getenv("DEBUG") != "",
 		gitHubClientID:     os.Getenv("GITHUB_CLIENT_ID"),
 		gitHubClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
@@ -110,6 +114,11 @@ func main() {
 		log.Fatalf(errNoGitHubCredentials)
 	}
 
+	if config.dbDialect == "" && config.dbDataSource == "" {
+		config.dbDialect = "sqlite3"
+		config.dbDataSource = ":memory:"
+	}
+
 	handler.SetVersion(version)
 
 	handler.SetOauthConfig(&oauth2.Config{
@@ -120,7 +129,7 @@ func main() {
 	})
 
 	model.SetLogger(log)
-	model.InitDB("sqlite3", "sqlite.db")
+	model.InitDB(config.dbDialect, config.dbDataSource)
 
 	sessions.SetLogger(log)
 	handler.SetLogger(log)
