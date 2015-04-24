@@ -24,7 +24,7 @@ func InitDB(driver, database string) {
 	db.LogMode(true)
 	db.SetLogger(&debugLogger{})
 
-	db.AutoMigrate(&Job{}, &LeaveAllowance{}, &User{})
+	db.AutoMigrate(&Job{}, &LeaveAllowance{}, &LeaveRequest{}, &User{})
 
 	db.Model(&Job{}).AddIndex("id", "id")
 	db.Model(&Job{}).AddIndex("deleted_at", "deleted_at")
