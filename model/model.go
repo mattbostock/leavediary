@@ -38,6 +38,10 @@ type LeaveRequest struct {
 	Description string
 	StartTime   time.Time `sql:"DEFAULT:null"`
 	EndTime     time.Time `sql:"DEFAULT:null"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt time.Time
 }
 
 type User struct {
