@@ -8,6 +8,8 @@ import (
 type Job struct {
 	ID              uint64 `gorm:"column:id; primary_key:yes"`
 	ExportSecret    string
+	User            User
+	UserID          uint64    `gorm:"column:user_id"`
 	StartTime       time.Time `sql:"DEFAULT:null"`
 	EndTime         time.Time `sql:"DEFAULT:null"`
 	EmployerName    string
@@ -20,7 +22,9 @@ type Job struct {
 }
 
 type LeaveAllowance struct {
-	ID           uint64    `gorm:"column:id; primary_key:yes"`
+	ID           uint64 `gorm:"column:id; primary_key:yes"`
+	Job          Job
+	JobID        uint64    `gorm:"column:job_id"`
 	StartTime    time.Time `sql:"DEFAULT:null"`
 	EndTime      time.Time `sql:"DEFAULT:null"`
 	Minutes      int32
@@ -34,6 +38,8 @@ type LeaveAllowance struct {
 
 type LeaveRequest struct {
 	ID          uint64 `gorm:"column:id; primary_key:yes"`
+	Job         Job
+	JobID       uint64 `gorm:"column:job_id"`
 	Minutes     uint32
 	Description string
 	StartTime   time.Time `sql:"DEFAULT:null"`
