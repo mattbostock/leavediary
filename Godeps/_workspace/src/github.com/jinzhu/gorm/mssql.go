@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 )
 
 type mssql struct{}
@@ -20,7 +21,7 @@ func (s *mssql) HasTop() bool {
 	return true
 }
 
-func (d *mssql) SqlTag(value reflect.Value, size int) string {
+func (s *mssql) SqlTag(value reflect.Value, size int) string {
 	switch value.Kind() {
 	case reflect.Bool:
 		return "bit"
@@ -33,32 +34,30 @@ func (d *mssql) SqlTag(value reflect.Value, size int) string {
 	case reflect.String:
 		if size > 0 && size < 65532 {
 			return fmt.Sprintf("nvarchar(%d)", size)
-		} else {
-			return "text"
 		}
+		return "text"
 	case reflect.Struct:
-		if value.Type() == timeType {
+		if _, ok := value.Interface().(time.Time); ok {
 			return "datetime2"
 		}
 	default:
 		if _, ok := value.Interface().([]byte); ok {
 			if size > 0 && size < 65532 {
 				return fmt.Sprintf("varchar(%d)", size)
-			} else {
-				return "text"
 			}
+			return "text"
 		}
 	}
 	panic(fmt.Sprintf("invalid sql type %s (%s) for mssql", value.Type().Name(), value.Kind().String()))
 }
 
 func (s *mssql) PrimaryKeyTag(value reflect.Value, size int) string {
-	suffix_str := " IDENTITY(1,1) PRIMARY KEY"
+	suffix := " IDENTITY(1,1) PRIMARY KEY"
 	switch value.Kind() {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uintptr:
-		return "int" + suffix_str
+		return "int" + suffix
 	case reflect.Int64, reflect.Uint64:
-		return "bigint" + suffix_str
+		return "bigint" + suffix
 	default:
 		panic("Invalid primary key type")
 	}

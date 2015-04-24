@@ -1,16 +1,76 @@
+<div class="row" data-equalizer>
+<div class="large-6 columns">
+  <p class="days-remaining panel callout" data-equalizer-watch>
+    <span class="allowance-dates">
+      <a href="/dashboard/allowance/{{ .CurrentLeaveAllowance.ID }}">
+      {{ .CurrentLeaveAllowance.StartTime | shortDate }} &mdash;
+      {{ .CurrentLeaveAllowance.EndTime | shortDate }}
+      </a>
+    </span>
+    <span class="statistic">{{ .RemainingDays }} days</span>
+    <span class="description">remaining</span>
+  </p>
+</div>
+
 <div class="row">
 <div class="large-12 columns">
-{{if len .Jobs}}
-  <p>You have n days remaining this leave year</p>
-{{else}}
-  <form method="post">
-    <h2>Your details</h2>
-    <p>
-      To get started, please answer these questions about your current employer.
-    </p>
+{{ if not .NextOnLeave.StartTime.IsZero }}
+  <h3>You're next on leave on: <a href="/dashboard/request/{{ .NextOnLeave.ID }}"><span class="day-of-week">{{ .NextOnLeave.StartTime | dayOfWeek }}</span> {{ .NextOnLeave.StartTime | shortDate}}</a></h3>
+{{ end }}
+  <a href="/dashboard/request/new" class="context-action">Request time off</a>
+</div>
+</div>
 
-    <input class="button" type="submit" value="Continue">
-  </form>
-{{end}}
+<div class="row">
+<div class="large-12 columns">
+{{ if len .UpcomingRequests }}
+  <table role="grid">
+    <caption>Upcoming</caption>
+    <tr>
+      <th>Start date</th>
+      <th>End date</th>
+      <th class="description">Description</th>
+      <th>Days taken</th>
+    </tr>
+    {{range $r := .UpcomingRequests}}
+    <tr>
+      <td class="start-date">{{ $r.StartTime | shortDate }} <span class="day-of-week">{{ $r.StartTime | dayOfWeek }}</span></td>
+      <td class="end-date">{{ $r.EndTime | shortDate }} <span class="day-of-week">{{ $r.EndTime | dayOfWeek }}</span></td>
+      <td class="description"><a href="/dashboard/request/{{ $r.ID }}">{{ $r.Description }}</a></td>
+      <td class="days">{{ uMinsToDays $r.Minutes }}</td>
+    </tr>
+    {{end}}
+  </table>
+{{ else }}
+  <p class="panel">No upcoming leave</p>
+{{ end }}
+</div>
+</div>
+
+<div class="row">
+<div class="large-12 columns">
+{{ if len .PastRequests }}
+  <table class="statement" role="grid">
+    <caption>Past time off</caption>
+    <tr>
+      <th>Start date</th>
+      <th>End date</th>
+      <th class="description">Description</th>
+      <th>Days taken</th>
+    </tr>
+    <tr>
+    {{range $r := .PastRequests}}
+    <tr>
+      <td class="start-date">{{ $r.StartTime | shortDate }} <span class="day-of-week">{{ $r.StartTime | dayOfWeek }}</span></td>
+      <td class="end-date">{{ $r.EndTime | shortDate }} <span class="day-of-week">{{ $r.EndTime | dayOfWeek }}</span></td>
+      <td class="description"><a href="/dashboard/request/{{ $r.ID }}">{{ $r.Description }}</a></td>
+      <td class="days">{{ uMinsToDays $r.Minutes }}</td>
+    </tr>
+    {{end}}
+    </tr>
+  </table>
+{{ else }}
+  <p class="panel">No past leave</p>
+{{ end }}
 </div>
 </div>

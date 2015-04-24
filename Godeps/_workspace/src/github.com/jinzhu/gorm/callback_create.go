@@ -6,8 +6,8 @@ import (
 )
 
 func BeforeCreate(scope *Scope) {
-	scope.CallMethod("BeforeSave")
-	scope.CallMethod("BeforeCreate")
+	scope.CallMethodWithErrorCheck("BeforeSave")
+	scope.CallMethodWithErrorCheck("BeforeCreate")
 }
 
 func UpdateTimeStampWhenCreate(scope *Scope) {
@@ -25,18 +25,18 @@ func Create(scope *Scope) {
 		// set create sql
 		var sqls, columns []string
 		for _, field := range scope.Fields() {
-			if field.IsNormal && (!field.IsPrimaryKey || !scope.PrimaryKeyZero()) {
-				if field.DefaultValue != nil && field.IsBlank {
-					continue
+			if (field.IsNormal && !field.IsPrimaryKey) || (field.IsPrimaryKey && !field.IsBlank) {
+				if !field.IsBlank || !field.HasDefaultValue {
+					columns = append(columns, scope.Quote(field.DBName))
+					sqls = append(sqls, scope.AddToVars(field.Field.Interface()))
 				}
-				columns = append(columns, scope.Quote(field.DBName))
-				sqls = append(sqls, scope.AddToVars(field.Field.Interface()))
 			}
 		}
 
 		returningKey := "*"
-		if scope.PrimaryKey() != "" {
-			returningKey = scope.PrimaryKey()
+		primaryField := scope.PrimaryKeyField()
+		if primaryField != nil {
+			returningKey = scope.Quote(primaryField.DBName)
 		}
 
 		if len(columns) == 0 {
@@ -55,35 +55,31 @@ func Create(scope *Scope) {
 		}
 
 		// execute create sql
-		var id interface{}
 		if scope.Dialect().SupportLastInsertId() {
 			if result, err := scope.DB().Exec(scope.Sql, scope.SqlVars...); scope.Err(err) == nil {
-				id, err = result.LastInsertId()
+				id, err := result.LastInsertId()
 				if scope.Err(err) == nil {
 					scope.db.RowsAffected, _ = result.RowsAffected()
+					if primaryField != nil {
+						scope.Err(scope.SetColumn(primaryField, id))
+					}
 				}
 			}
 		} else {
-			if scope.PrimaryKey() == "" {
+			if primaryField == nil {
 				if results, err := scope.DB().Exec(scope.Sql, scope.SqlVars...); err != nil {
 					scope.db.RowsAffected, _ = results.RowsAffected()
 				}
-			} else {
-				if scope.Err(scope.DB().QueryRow(scope.Sql, scope.SqlVars...).Scan(&id)) == nil {
-					scope.db.RowsAffected = 1
-				}
+			} else if scope.Err(scope.DB().QueryRow(scope.Sql, scope.SqlVars...).Scan(primaryField.Field.Addr().Interface())) == nil {
+				scope.db.RowsAffected = 1
 			}
-		}
-
-		if scope.PrimaryKey() != "" && !scope.HasError() && scope.PrimaryKeyZero() {
-			scope.SetColumn(scope.PrimaryKey(), id)
 		}
 	}
 }
 
 func AfterCreate(scope *Scope) {
-	scope.CallMethod("AfterCreate")
-	scope.CallMethod("AfterSave")
+	scope.CallMethodWithErrorCheck("AfterCreate")
+	scope.CallMethodWithErrorCheck("AfterSave")
 }
 
 func init() {

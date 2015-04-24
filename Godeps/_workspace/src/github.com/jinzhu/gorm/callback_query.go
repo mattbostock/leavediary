@@ -41,31 +41,51 @@ func Query(scope *Scope) {
 
 	if !scope.HasError() {
 		rows, err := scope.DB().Query(scope.Sql, scope.SqlVars...)
+		scope.db.RowsAffected = 0
 
 		if scope.Err(err) != nil {
 			return
 		}
-
 		defer rows.Close()
+
+		columns, _ := rows.Columns()
 		for rows.Next() {
+			scope.db.RowsAffected++
+
 			anyRecordFound = true
 			elem := dest
 			if isSlice {
 				elem = reflect.New(destType).Elem()
 			}
 
-			columns, _ := rows.Columns()
-			var values []interface{}
+			var values = make([]interface{}, len(columns))
+
 			fields := scope.New(elem.Addr().Interface()).Fields()
-			for _, value := range columns {
-				if field, ok := fields[value]; ok {
-					values = append(values, field.Field.Addr().Interface())
+			for index, column := range columns {
+				if field, ok := fields[column]; ok {
+					if field.Field.Kind() == reflect.Ptr {
+						values[index] = field.Field.Addr().Interface()
+					} else {
+						values[index] = reflect.New(reflect.PtrTo(field.Field.Type())).Interface()
+					}
 				} else {
-					var ignore interface{}
-					values = append(values, &ignore)
+					var value interface{}
+					values[index] = &value
 				}
 			}
+
 			scope.Err(rows.Scan(values...))
+
+			for index, column := range columns {
+				value := values[index]
+				if field, ok := fields[column]; ok {
+					if field.Field.Kind() == reflect.Ptr {
+						field.Field.Set(reflect.ValueOf(value).Elem())
+					} else if v := reflect.ValueOf(value).Elem().Elem(); v.IsValid() {
+						field.Field.Set(v)
+					}
+				}
+			}
 
 			if isSlice {
 				if isPtr {
@@ -83,10 +103,11 @@ func Query(scope *Scope) {
 }
 
 func AfterQuery(scope *Scope) {
-	scope.CallMethod("AfterFind")
+	scope.CallMethodWithErrorCheck("AfterFind")
 }
 
 func init() {
 	DefaultCallback.Query().Register("gorm:query", Query)
 	DefaultCallback.Query().Register("gorm:after_query", AfterQuery)
+	DefaultCallback.Query().Register("gorm:preload", Preload)
 }

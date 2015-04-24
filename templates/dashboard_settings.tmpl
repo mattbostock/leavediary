@@ -1,0 +1,43 @@
+<div class="row">
+<div class="large-12 columns">
+  <form method="post">
+    <h2>Settings</h2>
+
+    <div class="row">
+    <div class="large-4 columns">
+      <label for="employer_name">What is the name of your employer?</label>
+      <input type="text" name="employer_name" value="{{ urlValue .FormValues "employer_name" }}" required>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="large-4 columns">
+      <label>When did you start working there?</label>
+      <input class="day" type="number" pattern="\d*" min="01" max="31" placeholder="DD" name="job_start_day" value="{{ urlValue .FormValues "job_start_day" }}" required>
+      <input class="month" type="number" pattern="\d*" min="01" max="12" placeholder="MM" name="job_start_month" value="{{ urlValue .FormValues "job_start_month" }}" required>
+      <input class="year" type="number" pattern="\d*" min="1000" max="9999" placeholder="YYYY" name="job_start_year" value="{{ urlValue .FormValues "job_start_year" }}" required>
+    </div>
+    </div>
+
+{{ if not .JobID }}
+    <div class="row">
+    <div class="large-4 columns">
+      <label for="days_per_year">How many days off do you get each year?</label>
+      <input type="number" name="days_per_year" pattern="\d+(\.\d+)?" step="0.5" min="1" max="365" value="{{ urlValue .FormValues "days_per_year" }}" required>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="large-4 columns">
+      <label>When did your current leave year start?</label>
+      <input class="day" type="number" pattern="\d*" min="01" max="31" placeholder="DD" name="leave_start_day" value="{{ urlValue .FormValues "leave_start_day" }}" required>
+      <input class="month" type="number" pattern="\d*" min="01" max="12" placeholder="MM" name="leave_start_month" value="{{ urlValue .FormValues "leave_start_month" }}" required>
+      <input class="year" type="number" pattern="\d*" min="1000" max="9999" placeholder="YYYY" name="leave_start_year" value="{{ urlValue .FormValues "leave_start_year" }}" required>
+    </div>
+    </div>
+{{ end }}
+
+    <input class="button" type="submit" value="Update">
+  </form>
+</div>
+</div>

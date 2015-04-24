@@ -6,21 +6,68 @@ The fantastic ORM library for Golang, aims to be developer friendly.
 
 ## Overview
 
+* Full-Featured ORM (almost)
 * Chainable API
-* Embedded Structs
-* Relations
-* Callbacks (before/after create/save/update/delete/find)
-* Soft Deletes
 * Auto Migrations
+* Relations (Has One, Has Many, Belongs To, Many To Many, [Polymorphism](#polymorphism))
+* Callbacks (Before/After Create/Save/Update/Delete/Find)
+* Preloading (eager loading)
 * Transactions
+* Embed Anonymous Struct
+* Soft Deletes
 * Customizable Logger
 * Iteration Support via [Rows](#row--rows)
-* Scopes
-* sql.Scanner support
-* Polymorphism
 * Every feature comes with tests
-* Convention Over Configuration
 * Developer Friendly
+
+# Getting Started
+
+## Install
+
+```
+go get -u github.com/jinzhu/gorm
+```
+
+## Define Models (Structs)
+
+```go
+type User struct {
+	ID           int
+	Birthday     time.Time
+	Age          int
+	Name         string  `sql:"size:255"`
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	DeletedAt    time.Time
+
+	Emails            []Email         // One-To-Many relationship (has many)
+	BillingAddress    Address         // One-To-One relationship (has one)
+	BillingAddressID  sql.NullInt64   // Foreign key of BillingAddress
+	ShippingAddress   Address         // One-To-One relationship (has one)
+	ShippingAddressID int             // Foreign key of ShippingAddress
+	IgnoreMe          int `sql:"-"`   // Ignore this field
+	Languages         []Language `gorm:"many2many:user_languages;"` // Many-To-Many relationship, 'user_languages' is join table
+}
+
+type Email struct {
+	ID         int
+	UserID     int     // Foreign key for User (belongs to)
+	Email      string  `sql:"type:varchar(100);"` // Set field's type
+	Subscribed bool
+}
+
+type Address struct {
+	ID       int
+	Address1 string         `sql:"not null;unique"` // Set field as not nullable and unique
+	Address2 string         `sql:"type:varchar(100);unique"`
+	Post     sql.NullString `sql:not null`
+}
+
+type Language struct {
+	ID   int
+	Name string
+}
+```
 
 ## Conventions
 
@@ -37,60 +84,10 @@ db.Save(&User{Name: "xxx"}) // table "users"
 ```
 
 * Column name is the snake case of field's name
-* Use `Id` field as primary key
-* Use tag `sql` to change field's property, change the tag name with `db.SetTagIdentifier(new_name)`
+* Use `ID` field as primary key
 * Use `CreatedAt` to store record's created time if field exists
 * Use `UpdatedAt` to store record's updated time if field exists
 * Use `DeletedAt` to store record's deleted time if field exists [Soft Delete](#soft-delete)
-
-# Getting Started
-
-## Install
-
-```
-go get -u github.com/jinzhu/gorm
-```
-
-## Define Models (Structs)
-
-```go
-type User struct {
-	Id           int64
-	Birthday     time.Time
-	Age          int64
-	Name         string  `sql:"size:255"`
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
-	DeletedAt    time.Time
-
-	Emails            []Email         // One-To-Many relationship (has many)
-	BillingAddress    Address         // One-To-One relationship (has one)
-	BillingAddressId  sql.NullInt64   // Foreign key of BillingAddress
-	ShippingAddress   Address         // One-To-One relationship (has one)
-	ShippingAddressId int64           // Foreign key of ShippingAddress
-	IgnoreMe          int64 `sql:"-"` // Ignore this field
-	Languages         []Language `gorm:"many2many:user_languages;"` // Many-To-Many relationship, 'user_languages' is join table
-}
-
-type Email struct {
-	Id         int64
-	UserId     int64   // Foreign key for User (belongs to)
-	Email      string  `sql:"type:varchar(100);"` // Set field's type
-	Subscribed bool
-}
-
-type Address struct {
-	Id       int64
-	Address1 string         `sql:"not null;unique"` // Set field as not nullable and unique
-	Address2 string         `sql:"type:varchar(100);unique"`
-	Post     sql.NullString `sql:not null`
-}
-
-type Language struct {
-	Id   int64
-	Name string
-}
-```
 
 ## Initialize Database
 
@@ -145,6 +142,13 @@ db.AutoMigrate(&User{}, &Product{}, &Order{})
 
 // Add index
 db.Model(&User{}).AddIndex("idx_user_name", "name")
+
+// Add foreign key
+// 1st param : foreignkey field
+// 2nd param : destination table(id)
+// 3rd param : ONDELETE
+// 4th param : ONUPDATE
+db.Model(&User{}).AddForeignKey("user_id", "destination_table(id)", "CASCADE", "RESTRICT")
 
 // Multiple column index
 db.Model(&User{}).AddIndex("idx_user_name_age", "name", "age")
@@ -335,6 +339,28 @@ db.Where("name <> ?","jinzhu").Where("age >= ? and role <> ?",20,"admin").Find(&
 db.Where("role = ?", "admin").Or("role = ?", "super_admin").Not("name = ?", "jinzhu").Find(&users)
 ```
 
+### Preloading (Eager loading)
+
+```go
+db.Preload("Orders").Find(&users)
+//// SELECT * FROM users;
+//// SELECT * FROM orders WHERE user_id IN (1,2,3,4);
+
+db.Preload("Orders", "state NOT IN (?)", "cancelled").Find(&users)
+//// SELECT * FROM users;
+//// SELECT * FROM orders WHERE user_id IN (1,2,3,4) AND state NOT IN ('cancelled');
+
+db.Where("state = ?", "active").Preload("Orders", "state NOT IN (?)", "cancelled").Find(&users)
+//// SELECT * FROM users WHERE state = 'active';
+//// SELECT * FROM orders WHERE user_id IN (1,2) AND state NOT IN ('cancelled');
+
+db.Preload("Orders").Preload("Profile").Preload("Role").Find(&users)
+//// SELECT * FROM users;
+//// SELECT * FROM orders WHERE user_id IN (1,2,3,4); // has many
+//// SELECT * FROM profiles WHERE user_id IN (1,2,3,4); // has one
+//// SELECT * FROM roles WHERE id IN (4,5,6); // belongs to
+```
+
 ## Update
 
 ```go
@@ -345,9 +371,15 @@ user.Age = 100
 db.Save(&user)
 //// UPDATE users SET name='jinzhu 2', age=100, updated_at = '2013-11-17 21:34:10' WHERE id=111;
 
+db.Where("active = ?", true).Save(&user)
+//// UPDATE users SET name='jinzhu 2', age=100, updated_at = '2013-11-17 21:34:10' WHERE id=111 AND active = true;
+
 // Update an attribute if it is changed
 db.Model(&user).Update("name", "hello")
 //// UPDATE users SET name='hello', updated_at = '2013-11-17 21:34:10' WHERE id=111;
+
+db.Model(&user).Where("active = ?", true).Update("name", "hello")
+//// UPDATE users SET name='hello', updated_at = '2013-11-17 21:34:10' WHERE id=111 AND active = true;
 
 db.First(&user, 111).Update("name", "hello")
 //// SELECT * FROM users LIMIT 1;
@@ -386,6 +418,22 @@ db.Model(User{}).Updates(User{Name: "hello", Age: 18})
 db.Model(User{}).Updates(User{Name: "hello", Age: 18}).RowsAffected
 ```
 
+### Update with SQL Expression
+
+```go
+DB.Model(&product).Update("price", gorm.Expr("price * ? + ?", 2, 100))
+//// UPDATE "products" SET "code" = 'L1212', "price" = price * '2' + '100', "updated_at" = '2013-11-17 21:34:10' WHERE "id" = '2';
+
+DB.Model(&product).Updates(map[string]interface{}{"price": gorm.Expr("price * ? + ?", 2, 100)})
+//// UPDATE "products" SET "code" = 'L1212', "price" = price * '2' + '100', "updated_at" = '2013-11-17 21:34:10' WHERE "id" = '2';
+
+DB.Model(&product).UpdateColumn("quantity", gorm.Expr("quantity - ?", 1))
+//// UPDATE "products" SET "quantity" = quantity - 1 WHERE "id" = '2';
+
+DB.Model(&product).Where("quantity > 1").UpdateColumn("quantity", gorm.Expr("quantity - ?", 1))
+//// UPDATE "products" SET "quantity" = quantity - 1 WHERE "id" = '2' AND quantity > 1;
+```
+
 ## Delete
 
 ```go
@@ -416,7 +464,7 @@ db.Where("age = ?", 20).Delete(&User{})
 
 // Soft deleted records will be ignored when query them
 db.Where("age = 20").Find(&user)
-//// SELECT * FROM users WHERE age = 20 AND (deleted_at IS NULL AND deleted_at <= '0001-01-02');
+//// SELECT * FROM users WHERE age = 20 AND (deleted_at IS NULL OR deleted_at <= '0001-01-02');
 
 // Find soft deleted records with Unscoped
 db.Unscoped().Where("age = 20").Find(&users)
@@ -1087,13 +1135,12 @@ db.Where("email = ?", "x@example.org").Attrs(User{RegisteredIp: "111.111.111.111
 ```
 
 ## TODO
-* db.RegisterFuncation("Search", func() {})
-  db.Model(&[]User{}).Limit(10).Do("Search", "search func's argument")
-  db.Mode(&User{}).Do("EditForm").Get("edit_form_html")
-  DefaultTimeZone, R/W Splitting, Validation
+* db.Select("Languages", "Name").Update(&user)
+  db.Omit("Languages").Update(&user)
+* Auto migrate indexes
 * Github Pages
-* Includes
 * AlertColumn, DropColumn
+* R/W Splitting, Validation
 
 # Author
 
@@ -1105,6 +1152,6 @@ db.Where("email = ?", "x@example.org").Attrs(User{RegisteredIp: "111.111.111.111
 
 ## License
 
-Released under the [MIT License](http://www.opensource.org/licenses/MIT).
+Released under the [MIT License](https://github.com/jinzhu/gorm/blob/master/License).
 
 [![GoDoc](https://godoc.org/github.com/jinzhu/gorm?status.png)](http://godoc.org/github.com/jinzhu/gorm)

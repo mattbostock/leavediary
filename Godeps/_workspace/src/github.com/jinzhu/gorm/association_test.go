@@ -1,29 +1,9 @@
 package gorm_test
 
-import "testing"
-import "github.com/jinzhu/gorm"
-
-type Cat struct {
-	Id   int
-	Name string
-	Toy  Toy `gorm:"polymorphic:Owner;"`
-}
-
-type Dog struct {
-	Id   int
-	Name string
-	Toys []Toy `gorm:"polymorphic:Owner;"`
-}
-
-type Toy struct {
-	Id        int
-	Name      string
-	OwnerId   int
-	OwnerType string
-
-	// Define the owner type as a belongs_to so we can ensure it throws an error
-	Owner Dog `gorm:"foreignkey:owner_id; foreigntype:owner_type;"`
-}
+import (
+	"os"
+	"testing"
+)
 
 func TestHasOneAndHasManyAssociation(t *testing.T) {
 	DB.DropTable(Category{})
@@ -37,7 +17,7 @@ func TestHasOneAndHasManyAssociation(t *testing.T) {
 	post := Post{
 		Title:        "post 1",
 		Body:         "body 1",
-		Comments:     []Comment{{Content: "Comment 1"}, {Content: "Comment 2"}},
+		Comments:     []*Comment{{Content: "Comment 1"}, {Content: "Comment 2"}},
 		Category:     Category{Name: "Category 1"},
 		MainCategory: Category{Name: "Main Category 1"},
 	}
@@ -88,11 +68,11 @@ func TestRelated(t *testing.T) {
 
 	DB.Save(&user)
 
-	if user.CreditCard.Id == 0 {
+	if user.CreditCard.ID == 0 {
 		t.Errorf("After user save, credit card should have id")
 	}
 
-	if user.BillingAddress.Id == 0 {
+	if user.BillingAddress.ID == 0 {
 		t.Errorf("After user save, billing address should have id")
 	}
 
@@ -195,11 +175,15 @@ func TestManyToMany(t *testing.T) {
 	}
 
 	// Delete
+	user.Languages = []Language{}
+	DB.Model(&user).Association("Languages").Find(&user.Languages)
+
 	var language Language
 	DB.Where("name = ?", "EE").First(&language)
 	DB.Model(&user).Association("Languages").Delete(language, &language)
-	if DB.Model(&user).Association("Languages").Count() != len(totalLanguages)-1 {
+	if DB.Model(&user).Association("Languages").Count() != len(totalLanguages)-1 || len(user.Languages) != len(totalLanguages)-1 {
 		t.Errorf("Relations should be deleted with Delete")
+		os.Exit(1)
 	}
 	if DB.Where("name = ?", "EE").First(&Language{}).RecordNotFound() {
 		t.Errorf("Language EE should not be deleted")
@@ -207,69 +191,35 @@ func TestManyToMany(t *testing.T) {
 
 	languages = []Language{}
 	DB.Where("name IN (?)", []string{"CC", "DD"}).Find(&languages)
+
+	user2 := User{Name: "Many2Many_User2", Languages: languages}
+	DB.Save(&user2)
+
 	DB.Model(&user).Association("Languages").Delete(languages, &languages)
-	if DB.Model(&user).Association("Languages").Count() != len(totalLanguages)-3 {
+	if DB.Model(&user).Association("Languages").Count() != len(totalLanguages)-3 || len(user.Languages) != len(totalLanguages)-3 {
 		t.Errorf("Relations should be deleted with Delete")
+	}
+
+	if DB.Model(&user2).Association("Languages").Count() == 0 {
+		t.Errorf("Other user's relations should not be deleted")
 	}
 
 	// Replace
 	var languageB Language
 	DB.Where("name = ?", "BB").First(&languageB)
 	DB.Model(&user).Association("Languages").Replace(languageB)
-	if DB.Model(&user).Association("Languages").Count() != 1 {
+	if len(user.Languages) != 1 || DB.Model(&user).Association("Languages").Count() != 1 {
 		t.Errorf("Relations should be replaced")
 	}
 
 	DB.Model(&user).Association("Languages").Replace(&[]Language{{Name: "FF"}, {Name: "JJ"}})
-	if DB.Model(&user).Association("Languages").Count() != len([]string{"FF", "JJ"}) {
+	if len(user.Languages) != 2 || DB.Model(&user).Association("Languages").Count() != len([]string{"FF", "JJ"}) {
 		t.Errorf("Relations should be replaced")
 	}
 
 	// Clear
 	DB.Model(&user).Association("Languages").Clear()
-	if DB.Model(&user).Association("Languages").Count() != 0 {
+	if len(user.Languages) != 0 || DB.Model(&user).Association("Languages").Count() != 0 {
 		t.Errorf("Relations should be cleared")
-	}
-}
-
-func TestPolymorphic(t *testing.T) {
-	DB.DropTableIfExists(Cat{})
-	DB.DropTableIfExists(Dog{})
-	DB.DropTableIfExists(Toy{})
-
-	DB.AutoMigrate(&Cat{})
-	DB.AutoMigrate(&Dog{})
-	DB.AutoMigrate(&Toy{})
-
-	cat := Cat{Name: "Mr. Bigglesworth", Toy: Toy{Name: "cat nip"}}
-	dog := Dog{Name: "Pluto", Toys: []Toy{Toy{Name: "orange ball"}, Toy{Name: "yellow ball"}}}
-	DB.Save(&cat).Save(&dog)
-
-	var catToys []Toy
-	if err := DB.Model(&cat).Related(&catToys, "Toy").Error; err == gorm.RecordNotFound {
-		t.Errorf("Did not find any has one polymorphic association")
-	} else if len(catToys) != 1 {
-		t.Errorf("Should have found only one polymorphic has one association")
-	} else if catToys[0].Name != cat.Toy.Name {
-		t.Errorf("Should have found the proper has one polymorphic association")
-	}
-
-	var dogToys []Toy
-	if err := DB.Model(&dog).Related(&dogToys, "Toys").Error; err == gorm.RecordNotFound {
-		t.Errorf("Did not find any polymorphic has many associations")
-	} else if len(dogToys) != len(dog.Toys) {
-		t.Errorf("Should have found all polymorphic has many associations")
-	}
-
-	if DB.Model(&cat).Association("Toy").Count() != 1 {
-		t.Errorf("Should return one polymorphic has one association")
-	}
-
-	if DB.Model(&dog).Association("Toys").Count() != 2 {
-		t.Errorf("Should return two polymorphic has many associations")
-	}
-
-	if DB.Model(&Toy{OwnerId: dog.Id, OwnerType: "dog"}).Related(&dog, "Owner").Error == nil {
-		t.Errorf("Should have thrown unsupported belongs_to error")
 	}
 }

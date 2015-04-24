@@ -19,13 +19,13 @@ type User struct {
 	UpdatedAt         time.Time     // UpdatedAt: Time of record is updated, will be updated automatically
 	Emails            []Email       // Embedded structs
 	BillingAddress    Address       // Embedded struct
-	BillingAddressId  sql.NullInt64 // Embedded struct's foreign key
+	BillingAddressID  sql.NullInt64 // Embedded struct's foreign key
 	ShippingAddress   Address       // Embedded struct
 	ShippingAddressId int64         // Embedded struct's foreign key
 	CreditCard        CreditCard
 	Latitude          float64
 	Languages         []Language `gorm:"many2many:user_languages;"`
-	CompanyId         int64
+	CompanyID         int64
 	Company           Company
 	Role
 	PasswordHash      []byte
@@ -36,7 +36,7 @@ type User struct {
 }
 
 type CreditCard struct {
-	Id        int8
+	ID        int8
 	Number    string
 	UserId    sql.NullInt64
 	CreatedAt time.Time
@@ -53,7 +53,7 @@ type Email struct {
 }
 
 type Address struct {
-	Id        int
+	ID        int
 	Address1  string
 	Address2  string
 	Post      string
@@ -146,7 +146,7 @@ type Post struct {
 	MainCategoryId int64
 	Title          string
 	Body           string
-	Comments       []Comment
+	Comments       []*Comment
 	Category       Category
 	MainCategory   Category
 }

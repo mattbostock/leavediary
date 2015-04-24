@@ -4,8 +4,10 @@ import (
 	"database/sql"
 	"database/sql/driver"
 	"fmt"
-	"github.com/lib/pq/hstore"
 	"reflect"
+	"time"
+
+	"github.com/lib/pq/hstore"
 )
 
 type postgres struct {
@@ -23,7 +25,7 @@ func (s *postgres) HasTop() bool {
 	return false
 }
 
-func (d *postgres) SqlTag(value reflect.Value, size int) string {
+func (s *postgres) SqlTag(value reflect.Value, size int) string {
 	switch value.Kind() {
 	case reflect.Bool:
 		return "boolean"
@@ -39,7 +41,7 @@ func (d *postgres) SqlTag(value reflect.Value, size int) string {
 		}
 		return "text"
 	case reflect.Struct:
-		if value.Type() == timeType {
+		if _, ok := value.Interface().(time.Time); ok {
 			return "timestamp with time zone"
 		}
 	case reflect.Map:
@@ -66,7 +68,7 @@ func (s *postgres) PrimaryKeyTag(value reflect.Value, size int) string {
 }
 
 func (s *postgres) ReturningStr(tableName, key string) string {
-	return fmt.Sprintf("RETURNING \"%v\".%v", tableName, key)
+	return fmt.Sprintf("RETURNING %v.%v", s.Quote(tableName), key)
 }
 
 func (s *postgres) SelectFromDummyTable() string {
@@ -97,7 +99,7 @@ func (s *postgres) HasColumn(scope *Scope, tableName string, columnName string) 
 }
 
 func (s *postgres) RemoveIndex(scope *Scope, indexName string) {
-	scope.Raw(fmt.Sprintf("DROP INDEX %v", indexName)).Exec()
+	scope.Raw(fmt.Sprintf("DROP INDEX %v", s.Quote(indexName))).Exec()
 }
 
 var hstoreType = reflect.TypeOf(Hstore{})

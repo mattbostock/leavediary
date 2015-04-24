@@ -7,15 +7,14 @@ import (
 )
 
 type Association struct {
-	Scope       *Scope
-	PrimaryKey  interface{}
-	PrimaryType interface{}
-	Column      string
-	Error       error
-	Field       *Field
+	Scope      *Scope
+	PrimaryKey interface{}
+	Column     string
+	Error      error
+	Field      *Field
 }
 
-func (association *Association) err(err error) *Association {
+func (association *Association) setErr(err error) *Association {
 	if err != nil {
 		association.Error = err
 	}
@@ -24,40 +23,25 @@ func (association *Association) err(err error) *Association {
 
 func (association *Association) Find(value interface{}) *Association {
 	association.Scope.related(value, association.Column)
-	return association.err(association.Scope.db.Error)
+	return association.setErr(association.Scope.db.Error)
 }
 
 func (association *Association) Append(values ...interface{}) *Association {
 	scope := association.Scope
 	field := association.Field
-	fieldType := field.Field.Type()
 
 	for _, value := range values {
-		reflectvalue := reflect.ValueOf(value)
-		if reflectvalue.Kind() == reflect.Ptr {
-			if reflectvalue.Elem().Kind() == reflect.Struct {
-				if fieldType.Elem().Kind() == reflect.Ptr {
-					field.Set(reflect.Append(field.Field, reflectvalue))
-				} else if fieldType.Elem().Kind() == reflect.Struct {
-					field.Set(reflect.Append(field.Field, reflectvalue.Elem()))
-				}
-			} else if reflectvalue.Elem().Kind() == reflect.Slice {
-				if fieldType.Elem().Kind() == reflect.Ptr {
-					field.Set(reflect.AppendSlice(field.Field, reflectvalue))
-				} else if fieldType.Elem().Kind() == reflect.Struct {
-					field.Set(reflect.AppendSlice(field.Field, reflectvalue.Elem()))
-				}
-			}
-		} else if reflectvalue.Kind() == reflect.Struct && fieldType.Elem().Kind() == reflect.Struct {
+		reflectvalue := reflect.Indirect(reflect.ValueOf(value))
+		if reflectvalue.Kind() == reflect.Struct {
 			field.Set(reflect.Append(field.Field, reflectvalue))
-		} else if reflectvalue.Kind() == reflect.Slice && fieldType.Elem() == reflectvalue.Type().Elem() {
+		} else if reflectvalue.Kind() == reflect.Slice {
 			field.Set(reflect.AppendSlice(field.Field, reflectvalue))
 		} else {
-			association.err(errors.New("invalid association type"))
+			association.setErr(errors.New("invalid association type"))
 		}
 	}
 	scope.callCallbacks(scope.db.parent.callback.updates)
-	return association.err(scope.db.Error)
+	return association.setErr(scope.db.Error)
 }
 
 func (association *Association) getPrimaryKeys(values ...interface{}) []interface{} {
@@ -65,23 +49,16 @@ func (association *Association) getPrimaryKeys(values ...interface{}) []interfac
 	scope := association.Scope
 
 	for _, value := range values {
-		reflectValue := reflect.ValueOf(value)
-		if reflectValue.Kind() == reflect.Ptr {
-			reflectValue = reflectValue.Elem()
-		}
+		reflectValue := reflect.Indirect(reflect.ValueOf(value))
 		if reflectValue.Kind() == reflect.Slice {
 			for i := 0; i < reflectValue.Len(); i++ {
-				newScope := scope.New(reflectValue.Index(i).Interface())
-				primaryKey := newScope.PrimaryKeyValue()
-				if !reflect.DeepEqual(reflect.ValueOf(primaryKey), reflect.Zero(reflect.ValueOf(primaryKey).Type())) {
-					primaryKeys = append(primaryKeys, primaryKey)
+				if primaryField := scope.New(reflectValue.Index(i).Interface()).PrimaryKeyField(); !primaryField.IsBlank {
+					primaryKeys = append(primaryKeys, primaryField.Field.Interface())
 				}
 			}
 		} else if reflectValue.Kind() == reflect.Struct {
-			newScope := scope.New(value)
-			primaryKey := newScope.PrimaryKeyValue()
-			if !reflect.DeepEqual(reflect.ValueOf(primaryKey), reflect.Zero(reflect.ValueOf(primaryKey).Type())) {
-				primaryKeys = append(primaryKeys, primaryKey)
+			if primaryField := scope.New(value).PrimaryKeyField(); !primaryField.IsBlank {
+				primaryKeys = append(primaryKeys, primaryField.Field.Interface())
 			}
 		}
 	}
@@ -92,15 +69,36 @@ func (association *Association) Delete(values ...interface{}) *Association {
 	primaryKeys := association.getPrimaryKeys(values...)
 
 	if len(primaryKeys) == 0 {
-		association.err(errors.New("no primary key found"))
+		association.setErr(errors.New("no primary key found"))
 	} else {
 		relationship := association.Field.Relationship
 		// many to many
 		if relationship.Kind == "many_to_many" {
-			whereSql := fmt.Sprintf("%v.%v IN (?)", relationship.JoinTable, association.Scope.Quote(ToSnake(relationship.AssociationForeignKey)))
-			association.Scope.db.Model("").Table(relationship.JoinTable).Where(whereSql, primaryKeys).Delete("")
+			whereSql := fmt.Sprintf("%v.%v = ? AND %v.%v IN (?)",
+				relationship.JoinTable, association.Scope.Quote(relationship.ForeignDBName),
+				relationship.JoinTable, association.Scope.Quote(relationship.AssociationForeignDBName))
+
+			if err := association.Scope.db.Model("").Table(relationship.JoinTable).
+				Where(whereSql, association.PrimaryKey, primaryKeys).Delete("").Error; err == nil {
+				leftValues := reflect.Zero(association.Field.Field.Type())
+				for i := 0; i < association.Field.Field.Len(); i++ {
+					value := association.Field.Field.Index(i)
+					if primaryField := association.Scope.New(value.Interface()).PrimaryKeyField(); primaryField != nil {
+						var included = false
+						for _, primaryKey := range primaryKeys {
+							if equalAsString(primaryKey, primaryField.Field.Interface()) {
+								included = true
+							}
+						}
+						if !included {
+							leftValues = reflect.Append(leftValues, value)
+						}
+					}
+				}
+				association.Field.Set(leftValues)
+			}
 		} else {
-			association.err(errors.New("delete only support many to many"))
+			association.setErr(errors.New("delete only support many to many"))
 		}
 	}
 	return association
@@ -113,30 +111,34 @@ func (association *Association) Replace(values ...interface{}) *Association {
 		field := association.Field.Field
 
 		oldPrimaryKeys := association.getPrimaryKeys(field.Interface())
+		association.Field.Set(reflect.Zero(association.Field.Field.Type()))
 		association.Append(values...)
 		newPrimaryKeys := association.getPrimaryKeys(field.Interface())
 
 		var addedPrimaryKeys = []interface{}{}
-		for _, new := range newPrimaryKeys {
+		for _, newKey := range newPrimaryKeys {
 			hasEqual := false
-			for _, old := range oldPrimaryKeys {
-				if reflect.DeepEqual(new, old) {
+			for _, oldKey := range oldPrimaryKeys {
+				if reflect.DeepEqual(newKey, oldKey) {
 					hasEqual = true
 					break
 				}
 			}
 			if !hasEqual {
-				addedPrimaryKeys = append(addedPrimaryKeys, new)
+				addedPrimaryKeys = append(addedPrimaryKeys, newKey)
 			}
 		}
 		for _, primaryKey := range association.getPrimaryKeys(values...) {
 			addedPrimaryKeys = append(addedPrimaryKeys, primaryKey)
 		}
 
-		whereSql := fmt.Sprintf("%v.%v NOT IN (?)", relationship.JoinTable, scope.Quote(ToSnake(relationship.AssociationForeignKey)))
-		scope.db.Model("").Table(relationship.JoinTable).Where(whereSql, addedPrimaryKeys).Delete("")
+		whereSql := fmt.Sprintf("%v.%v = ? AND %v.%v NOT IN (?)",
+			relationship.JoinTable, association.Scope.Quote(relationship.ForeignDBName),
+			relationship.JoinTable, association.Scope.Quote(relationship.AssociationForeignDBName))
+
+		scope.db.Model("").Table(relationship.JoinTable).Where(whereSql, association.PrimaryKey, addedPrimaryKeys).Delete("")
 	} else {
-		association.err(errors.New("replace only support many to many"))
+		association.setErr(errors.New("replace only support many to many"))
 	}
 	return association
 }
@@ -145,10 +147,14 @@ func (association *Association) Clear() *Association {
 	relationship := association.Field.Relationship
 	scope := association.Scope
 	if relationship.Kind == "many_to_many" {
-		whereSql := fmt.Sprintf("%v.%v = ?", relationship.JoinTable, scope.Quote(ToSnake(relationship.ForeignKey)))
-		scope.db.Model("").Table(relationship.JoinTable).Where(whereSql, association.PrimaryKey).Delete("")
+		whereSql := fmt.Sprintf("%v.%v = ?", relationship.JoinTable, scope.Quote(relationship.ForeignDBName))
+		if err := scope.db.Model("").Table(relationship.JoinTable).Where(whereSql, association.PrimaryKey).Delete("").Error; err == nil {
+			association.Field.Set(reflect.Zero(association.Field.Field.Type()))
+		} else {
+			association.setErr(err)
+		}
 	} else {
-		association.err(errors.New("clear only support many to many"))
+		association.setErr(errors.New("clear only support many to many"))
 	}
 	return association
 }
@@ -157,30 +163,28 @@ func (association *Association) Count() int {
 	count := -1
 	relationship := association.Field.Relationship
 	scope := association.Scope
-	field := association.Field.Field
-	fieldValue := field.Interface()
-	newScope := scope.New(fieldValue)
+	newScope := scope.New(association.Field.Field.Interface())
 
 	if relationship.Kind == "many_to_many" {
 		whereSql := fmt.Sprintf("%v.%v IN (SELECT %v.%v FROM %v WHERE %v.%v = ?)",
 			newScope.QuotedTableName(),
 			scope.Quote(newScope.PrimaryKey()),
 			relationship.JoinTable,
-			scope.Quote(ToSnake(relationship.AssociationForeignKey)),
+			scope.Quote(relationship.AssociationForeignDBName),
 			relationship.JoinTable,
 			relationship.JoinTable,
-			scope.Quote(ToSnake(relationship.ForeignKey)))
+			scope.Quote(relationship.ForeignDBName))
 		scope.db.Model("").Table(newScope.QuotedTableName()).Where(whereSql, association.PrimaryKey).Count(&count)
 	} else if relationship.Kind == "has_many" || relationship.Kind == "has_one" {
-		whereSql := fmt.Sprintf("%v.%v = ?", newScope.QuotedTableName(), newScope.Quote(ToSnake(relationship.ForeignKey)))
+		whereSql := fmt.Sprintf("%v.%v = ?", newScope.QuotedTableName(), newScope.Quote(relationship.ForeignDBName))
 		countScope := scope.db.Model("").Table(newScope.QuotedTableName()).Where(whereSql, association.PrimaryKey)
-		if relationship.ForeignType != "" {
-			countScope = countScope.Where(fmt.Sprintf("%v.%v = ?", newScope.QuotedTableName(), newScope.Quote(ToSnake(relationship.ForeignType))), association.PrimaryType)
+		if relationship.PolymorphicType != "" {
+			countScope = countScope.Where(fmt.Sprintf("%v.%v = ?", newScope.QuotedTableName(), newScope.Quote(relationship.PolymorphicDBName)), scope.TableName())
 		}
 		countScope.Count(&count)
 	} else if relationship.Kind == "belongs_to" {
-		if v, err := scope.FieldValueByName(association.Column); err == nil {
-			whereSql := fmt.Sprintf("%v.%v = ?", newScope.QuotedTableName(), newScope.Quote(ToSnake(relationship.ForeignKey)))
+		if v, ok := scope.FieldByName(association.Column); ok {
+			whereSql := fmt.Sprintf("%v.%v = ?", newScope.QuotedTableName(), newScope.Quote(relationship.ForeignDBName))
 			scope.db.Model("").Table(newScope.QuotedTableName()).Where(whereSql, v).Count(&count)
 		}
 	}
