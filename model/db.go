@@ -31,7 +31,6 @@ func InitDB(driver, database string) {
 
 	db.Model(&LeaveRequest{}).AddIndex("start_date", "start_date")
 	db.Model(&LeaveRequest{}).AddIndex("deleted_at", "deleted_at")
-	db.Model(&LeaveRequest{}).AddIndex("added_by", "added_by")
 
 	db.Model(&LeaveAllowance{}).AddIndex("start_date", "start_date")
 	db.Model(&LeaveAllowance{}).AddIndex("deleted_at", "deleted_at")
