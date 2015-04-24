@@ -2,6 +2,7 @@ package handler
 
 import (
 	"html/template"
+	"net/url"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/mattbostock/timeoff/middleware/sessions"
@@ -12,6 +13,11 @@ import (
 const oauthStateCookieName = "github_state"
 
 var (
+	githubAPIBaseURL = &url.URL{
+		Scheme: "https",
+		Host:   "api.github.com",
+		Path:   "/",
+	}
 	log            *logrus.Logger
 	oauthConfig    *oauth2.Config
 	output         *render.Render

@@ -34,6 +34,10 @@ func GithubOauthCallback(w http.ResponseWriter, r *http.Request) {
 
 	httpClient := oauthConfig.Client(oauth2.NoContext, t)
 	githubClient := github.NewClient(httpClient)
+
+	// set this explicitly as we'll override it in tests
+	githubClient.BaseURL = githubAPIBaseURL
+
 	user, _, err := githubClient.Users.Get("")
 
 	if err != nil {
