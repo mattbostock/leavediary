@@ -47,9 +47,9 @@ type LeaveRequest struct {
 type User struct {
 	ID       uint64 `gorm:"column:id; primary_key:yes"`
 	Name     string `sql:"type:text;"`
-	GitHubID uint64
+	GitHubID uint64 `gorm:"column:github_id"`
 	Email    string `sql:"type:text;"`
-	TZOffset int16  // time zone as seconds east of UTC
+	TZOffset int16  `gorm:"column:tz_offset"` // time zone as seconds east of UTC
 	Jobs     []Job
 
 	CreatedAt time.Time
