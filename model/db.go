@@ -29,11 +29,11 @@ func InitDB(driver, database string) {
 	db.Model(&Job{}).AddIndex("id", "id")
 	db.Model(&Job{}).AddIndex("deleted_at", "deleted_at")
 
-	db.Model(&LeaveRequest{}).AddIndex("start_date", "start_date")
-	db.Model(&LeaveRequest{}).AddIndex("deleted_at", "deleted_at")
-
 	db.Model(&LeaveAllowance{}).AddIndex("start_date", "start_date")
 	db.Model(&LeaveAllowance{}).AddIndex("deleted_at", "deleted_at")
+
+	db.Model(&LeaveRequest{}).AddIndex("start_date", "start_date")
+	db.Model(&LeaveRequest{}).AddIndex("deleted_at", "deleted_at")
 
 	db.Model(&User{}).AddIndex("id", "id")
 	db.Model(&User{}).AddIndex("email", "email")
