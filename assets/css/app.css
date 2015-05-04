@@ -8,8 +8,42 @@ footer {
   padding: 2rem 0;
 }
 
+label {
+  margin: .6rem 0 .6rem 0;
+}
+
+label em {
+  border-left: 4px solid silver;
+  color: #818181;
+  display: block;
+  margin: 1em 0;
+  padding-left: 1em;
+}
+
 .top-bar {
   margin-bottom: 2rem;
+}
+
+
+input.day, input.month, input.year {
+  display: inline-block;
+}
+
+input.day, input.month {
+  width: 4rem;
+}
+
+input.year {
+  width: 6rem;
+}
+
+input[type='number'] {
+    -moz-appearance:textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
 }
 
 html.backgroundsize .github-icon {
