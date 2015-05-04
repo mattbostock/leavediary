@@ -39,6 +39,22 @@ label em {
   margin-bottom: 1rem;
 }
 
+.days-remaining {
+  text-align: center;
+}
+
+.days-remaining .description {
+  display: block;
+  font-size: 2rem;
+}
+
+.days-remaining .statistic {
+  display: block;
+  font-size: 5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .top-bar {
   margin-bottom: 2rem;
 }
