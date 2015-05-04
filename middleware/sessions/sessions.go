@@ -1,7 +1,6 @@
 package sessions
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -56,7 +55,7 @@ func (m *Manager) SetCookie(w http.ResponseWriter, value interface{}) error {
 	s := securecookie.New(m.hashKey, m.hashKey)
 	encoded, err := s.Encode(m.sessionName, value)
 	if err != nil {
-		return errors.New(fmt.Sprintf("Could not encode cookie with value %v: %s", value, err))
+		return fmt.Errorf("Could not encode cookie with value %v: %s", value, err)
 	}
 
 	// Older browsers don't support MaxAge, but it just means the session
