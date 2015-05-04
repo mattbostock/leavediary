@@ -20,10 +20,32 @@ label em {
   padding-left: 1em;
 }
 
+.action-list {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.8;
+  list-style: square;
+  margin-bottom: 0;
+}
+
+.action-list a:link {
+  text-decoration: underline;
+}
+
+.context-action {
+  display: inline-block;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
 .top-bar {
   margin-bottom: 2rem;
 }
 
+p a:link, .context-action {
+  text-decoration: underline;
+}
 
 input.day, input.month, input.year {
   display: inline-block;
