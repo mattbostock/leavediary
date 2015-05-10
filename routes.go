@@ -11,6 +11,12 @@ func registerRoutes() {
 	// Expose `expvar` debug variables
 	mux.Get("/debug/vars", http.DefaultServeMux)
 
+	mux.Get("/dashboard/request/new", http.HandlerFunc(handler.DashboardRequest))
+	mux.Get("/dashboard/request/:id", http.HandlerFunc(handler.DashboardRequest))
+
+	mux.Post("/dashboard/request/new", http.HandlerFunc(handler.DashboardRequest))
+	mux.Post("/dashboard/request/:id", http.HandlerFunc(handler.DashboardRequest))
+
 	mux.Get("/dashboard/settings", http.HandlerFunc(handler.DashboardSettings))
 	mux.Post("/dashboard/settings", http.HandlerFunc(handler.DashboardSettings))
 

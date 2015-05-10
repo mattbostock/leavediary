@@ -66,6 +66,11 @@ type User struct {
 	DeletedAt time.Time
 }
 
+func FindLeaveRequest(id uint64) (l LeaveRequest, err error) {
+	res := db.First(&l, id)
+	return l, res.Error
+}
+
 func FindUser(id uint64) (user User, err error) {
 	res := db.Preload("Jobs").First(&user, id)
 	return user, res.Error
@@ -208,4 +213,23 @@ func (r *LeaveRequest) After(t time.Time) bool {
 
 func (r *LeaveRequest) Before(t time.Time) bool {
 	return r.StartTime.Before(t)
+}
+
+func (r *LeaveRequest) Save() error {
+	res := db.Save(r)
+	return res.Error
+}
+
+func (r *LeaveRequest) FitsExistingAllowancePeriod() (result int, err error) {
+	if r.JobID == 0 {
+		return result, errors.New("Job ID is zero")
+	}
+
+	err = db.Table("leave_allowances").
+		Select("COUNT(id)").
+		Where("is_adjustment = ? AND start_time <= ? AND end_time >= ? AND job_id = ?", false, r.StartTime, r.EndTime, r.JobID).
+		Where("deleted_at IS NULL OR deleted_at <= '0001-01-02'").
+		Row().Scan(&result)
+
+	return result, err
 }

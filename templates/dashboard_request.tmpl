@@ -1,0 +1,61 @@
+<div class="row">
+<div class="large-12 columns">
+  <form method="post">
+    <h2>Leave request</h2>
+
+{{ if .UserErr }}
+    <div class="row">
+    <div class="large-12 columns">
+      <p class="error">{{ .UserErr }}</p>
+    </div>
+    </div>
+
+{{ end }}
+    <div class="row">
+    <div class="large-4 columns">
+      <label for="description">Description</label>
+      <input type="text" name="description" value="{{ urlValue .FormValues "description" }}" required>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="large-4 columns">
+      <label>Leave start date</label>
+      <input class="day" type="number" pattern="\d*" min="01" max="31" placeholder="DD" name="leave_start_day" value="{{ urlValue .FormValues "leave_start_day" }}" required>
+      <input class="month" type="number" pattern="\d*" min="01" max="12" placeholder="MM" name="leave_start_month" value="{{ urlValue .FormValues "leave_start_month" }}" required>
+      <input class="year" type="number" pattern="\d*" min="1000" max="9999" placeholder="YYYY" name="leave_start_year" value="{{ urlValue .FormValues "leave_start_year" }}" required>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="large-4 columns">
+      <label>Leave end date</label>
+      <input class="day" type="number" pattern="\d*" min="01" max="31" placeholder="DD" name="leave_end_day" value="{{ urlValue .FormValues "leave_end_month" }}" required>
+      <input class="month" type="number" pattern="\d*" min="01" max="12" placeholder="MM" name="leave_end_month" value="{{ urlValue .FormValues "leave_end_month" }}" required>
+      <input class="year" type="number" pattern="\d*" min="1000" max="9999" placeholder="YYYY" name="leave_end_year" value="{{ urlValue .FormValues "leave_end_year" }}" required>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="large-4 columns">
+      <label for="days">
+        How many working days will you take off?
+        <em>Don't forget to exclude weekends or public holidays if you don't work on those days.</em>
+      </label>
+      <input type="number" name="days" pattern="\d+(\.\d+)?" step="0.5" min="1" max="365" value="{{ urlValue .FormValues "days" }}" required>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="large-4 columns">
+      {{ if .ID }}
+        <input class="button" type="submit" value="Update">
+        <a href="/dashboard/request/delete/{{ .ID }}" class="button alert right">Delete</a>
+      {{ else }}
+        <input class="button" type="submit" value="Add">
+      {{ end }}
+    </div>
+    </div>
+  </form>
+</div>
+</div>
