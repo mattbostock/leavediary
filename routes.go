@@ -10,6 +10,7 @@ import (
 func registerRoutes() {
 	// Expose `expvar` debug variables
 	mux.Get("/debug/vars", http.DefaultServeMux)
+	mux.Get("/dashboard/allowance/delete/:id", http.HandlerFunc(handler.DashboardAllowanceDelete))
 	mux.Get("/dashboard/allowance/new", http.HandlerFunc(handler.DashboardAllowance))
 	mux.Get("/dashboard/allowance/:id", http.HandlerFunc(handler.DashboardAllowance))
 

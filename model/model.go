@@ -76,6 +76,11 @@ func FindLeaveRequest(id uint64) (l LeaveRequest, err error) {
 	return l, res.Error
 }
 
+func DeleteLeaveAllowance(id uint64) (err error) {
+	err = db.Where("id = ?", id).Delete(&LeaveAllowance{}).Error
+	return err
+}
+
 func DeleteLeaveRequest(id uint64) (err error) {
 	err = db.Where("id = ?", id).Delete(&LeaveRequest{}).Error
 	return err
