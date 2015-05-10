@@ -76,6 +76,11 @@ func FindLeaveRequest(id uint64) (l LeaveRequest, err error) {
 	return l, res.Error
 }
 
+func DeleteLeaveRequest(id uint64) (err error) {
+	err = db.Where("id = ?", id).Delete(&LeaveRequest{}).Error
+	return err
+}
+
 func FindUser(id uint64) (user User, err error) {
 	res := db.Preload("Jobs").First(&user, id)
 	return user, res.Error

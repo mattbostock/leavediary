@@ -16,6 +16,7 @@ func registerRoutes() {
 	mux.Post("/dashboard/allowance/new", http.HandlerFunc(handler.DashboardAllowance))
 	mux.Post("/dashboard/allowance/:id", http.HandlerFunc(handler.DashboardAllowance))
 
+	mux.Get("/dashboard/request/delete/:id", http.HandlerFunc(handler.DashboardRequestDelete))
 	mux.Get("/dashboard/request/new", http.HandlerFunc(handler.DashboardRequest))
 	mux.Get("/dashboard/request/:id", http.HandlerFunc(handler.DashboardRequest))
 
