@@ -66,6 +66,11 @@ type User struct {
 	DeletedAt time.Time
 }
 
+func FindLeaveAllowance(id uint64) (l LeaveAllowance, err error) {
+	res := db.First(&l, id)
+	return l, res.Error
+}
+
 func FindLeaveRequest(id uint64) (l LeaveRequest, err error) {
 	res := db.First(&l, id)
 	return l, res.Error
@@ -205,6 +210,69 @@ func (l *LeaveAllowance) usedTime() (minutes int32, err error) {
 		Row().Scan(&minutes)
 
 	return minutes, err
+}
+
+// IntersectsLeaveRequests checks if a leave allowance starts or ends part-way through
+// any existing leave requests for the same job.
+//
+// This query can be used to ensure that changes to a leave allowance will not
+// cause leave requests to span leave allowance periods, which is currently not supported.
+func (a *LeaveAllowance) IntersectsLeaveRequest() (intersects LeaveRequest, _ error) {
+	if a.JobID == 0 {
+		return intersects, errors.New("Job ID is zero")
+	}
+
+	res := db.First(&intersects,
+		`
+		id <> ? AND
+		(start_time < ? AND end_time > ?)
+		OR
+		(start_time < ? AND end_time > ?)
+		AND job_id = ?`,
+
+		a.ID,
+		a.StartTime,
+		a.StartTime,
+		a.EndTime,
+		a.EndTime,
+		a.JobID)
+
+	if res.Error == gorm.RecordNotFound {
+		return intersects, nil
+	}
+
+	return intersects, res.Error
+}
+
+func (a *LeaveAllowance) OverlapsAnother() (overlaps LeaveAllowance, _ error) {
+	if a.JobID == 0 {
+		return overlaps, errors.New("Job ID is zero")
+	}
+
+	res := db.First(&overlaps,
+		`id <> ? AND is_adjustment = ?
+		AND start_time >= ? AND start_time < ?
+		AND end_time > ? AND end_time <= ?
+		AND job_id = ?`,
+
+		a.ID,
+		false,
+		a.StartTime,
+		a.EndTime,
+		a.StartTime,
+		a.EndTime,
+		a.JobID)
+
+	if res.Error == gorm.RecordNotFound {
+		return overlaps, nil
+	}
+
+	return overlaps, res.Error
+}
+
+func (a *LeaveAllowance) Save() error {
+	res := db.Save(a)
+	return res.Error
 }
 
 func (r *LeaveRequest) After(t time.Time) bool {

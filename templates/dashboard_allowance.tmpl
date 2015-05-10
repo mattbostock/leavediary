@@ -1,0 +1,42 @@
+<div class="row">
+<div class="large-12 columns">
+  <form method="post">
+    <h2>Leave year</h2>
+
+{{ if .UserErr }}
+    <div class="row">
+    <div class="large-12 columns">
+      <p class="error">{{ .UserErr }}</p>
+    </div>
+    </div>
+
+{{ end }}
+    <div class="row">
+    <div class="large-4 columns">
+      <label>Leave year start date</label>
+      <input class="day" type="number" pattern="\d*" min="01" max="31" placeholder="DD" name="allowance_start_day" value="{{ urlValue .FormValues "allowance_start_day" }}" required>
+      <input class="month" type="number" pattern="\d*" min="01" max="12" placeholder="MM" name="allowance_start_month" value="{{ urlValue .FormValues "allowance_start_month" }}" required>
+      <input class="year" type="number" pattern="\d*" min="1000" max="9999" placeholder="YYYY" name="allowance_start_year" value="{{ urlValue .FormValues "allowance_start_year" }}" required>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="large-4 columns">
+      <label for="days">How days off? Include any public holidays.</label>
+      <input type="number" name="days" pattern="\d+(\.\d+)?" step="0.5" min="1" max="365" value="{{ urlValue .FormValues "days" }}" required>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="large-4 columns">
+      {{ if .ID }}
+        <input class="button" type="submit" value="Update">
+        <a href="/dashboard/allowance/delete/{{ .ID }}" class="button alert right">Delete</a>
+      {{ else }}
+        <input class="button" type="submit" value="Add">
+      {{ end }}
+    </div>
+    </div>
+  </form>
+</div>
+</div>
