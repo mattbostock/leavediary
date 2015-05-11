@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"crypto/rand"
 	"fmt"
+	"math/big"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -71,8 +73,21 @@ func DashboardSettings(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		var charPool = []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+		exportSecret := make([]byte, 64)
+
+		for i := range exportSecret {
+			n, err := rand.Int(rand.Reader, big.NewInt(int64(len(charPool))))
+			if err != nil {
+				internalError(w, err)
+				return
+			}
+			exportSecret[i] = charPool[n.Int64()]
+		}
+
 		j := model.Job{
 			EmployerName: employerName,
+			ExportSecret: string(exportSecret),
 			StartTime:    jobStart,
 		}
 

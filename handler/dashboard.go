@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/mattbostock/timeoff/model"
@@ -64,19 +66,33 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 		nextOnLeave = upcomingRequests[0]
 	}
 
+	calendarURL := &url.URL{
+		Scheme: "https",
+		Host:   r.Host,
+		Path:   fmt.Sprintf("/export/ics/%s", job.ExportSecret),
+	}
+
+	webCalURLNoScheme := &url.URL{}
+	*webCalURLNoScheme = *calendarURL
+	webCalURLNoScheme.Scheme = ""
+
 	output.HTML(w, http.StatusOK, "dashboard", &struct {
 		CurrentLeaveAllowance model.LeaveAllowance
+		CalendarURL           *url.URL
 		NextOnLeave           model.LeaveRequest
 		PastRequests          []model.LeaveRequest
 		UpcomingRequests      []model.LeaveRequest
 		RemainingDays         float32
 		User                  model.User
+		WebCalURLNoScheme     *url.URL
 	}{
 		currentLeaveAllowance,
+		calendarURL,
 		nextOnLeave,
 		pastRequests,
 		upcomingRequests,
 		remainingDays,
 		user,
+		webCalURLNoScheme,
 	})
 }

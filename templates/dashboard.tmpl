@@ -11,6 +11,36 @@
     <span class="description">remaining</span>
   </p>
 </div>
+<div class="large-6 columns">
+  <div class="panel" data-equalizer-watch>
+    <ul role="navigation" class="action-list">
+      <li role="menuitem"><a href="{{ .CalendarURL }}" data-reveal-id="calendar-modal">Add to your calendar</a></li>
+    </ul>
+
+    <div id="calendar-modal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+      <h2 id="modalTitle">Add to your calendar</h2>
+      <ul role="navigation" class="action-list">
+        <li role="menuitem"><a href="webcal:{{ .WebCalURLNoScheme }}">Apple Calendar</a></li>
+        <li role="menuitem"><a href="webcal:{{ .WebCalURLNoScheme }}">Outlook</a></li>
+        <li role="menuitem"><a href="https://www.google.com/calendar/render?cid={{ .CalendarURL }}">Google Calendar</a></li>
+        <li role="menuitem"><a href="{{ .CalendarURL }}">Download .ics file</a></li>
+      </ul>
+
+      <form>
+        <fieldset>
+        <legend>Copy calendar URL</legend>
+
+        <label>Private calendar URL
+          <input type="text" value="{{ .CalendarURL }}">
+        </label>
+        </fieldset>
+      </form>
+      <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    </div>
+
+  </div>
+</div>
+</div>
 
 <div class="row">
 <div class="large-12 columns">

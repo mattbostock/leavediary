@@ -27,6 +27,8 @@ func registerRoutes() {
 	mux.Get("/dashboard/settings", http.HandlerFunc(handler.DashboardSettings))
 	mux.Post("/dashboard/settings", http.HandlerFunc(handler.DashboardSettings))
 
+	mux.Get("/export/ics/:secret", http.HandlerFunc(handler.ExportICS))
+
 	mux.Get("/oauth/github/callback", http.HandlerFunc(handler.GithubOauthCallback))
 	mux.Get("/dashboard", http.HandlerFunc(handler.Dashboard))
 	mux.Get("/logout", http.HandlerFunc(handler.Logout))

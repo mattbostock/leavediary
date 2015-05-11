@@ -91,6 +91,11 @@ func FindUser(id uint64) (user User, err error) {
 	return user, res.Error
 }
 
+func FindJobFromExportSecret(secret string) (j Job, err error) {
+	res := db.Where("export_secret = ?", secret).First(&j)
+	return j, res.Error
+}
+
 func (u *User) CurrentJob() Job {
 	// FIXME: Support multiple jobs per user in future; for now, just support one per user
 	if len(u.Jobs) > 0 {

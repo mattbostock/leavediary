@@ -71,6 +71,10 @@
 			"Rev": "7fd203841f2a5b43b675f4c8d05b4668bbae1e53"
 		},
 		{
+			"ImportPath": "github.com/soh335/ical",
+			"Rev": "9e3fbc2c77081d0ef018279ab30b00c89d417ece"
+		},
+		{
 			"ImportPath": "github.com/stretchr/testify/assert",
 			"Rev": "1297dc01ed0a819ff634c89707081a4df43baf6b"
 		},
