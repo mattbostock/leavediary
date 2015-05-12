@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/mattbostock/timeoff/model"
+	"github.com/mattbostock/leavediary/model"
 )
 
 func DashboardRequest(w http.ResponseWriter, r *http.Request) {

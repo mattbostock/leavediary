@@ -13,4 +13,4 @@ test:   testdeps
 	go test -cover ./...
 
 run:	build
-	./timeoff
+	./leavediary

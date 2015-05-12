@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/mattbostock/timeoff/model"
+	"github.com/mattbostock/leavediary/model"
 	"github.com/soh335/ical"
 )
 
@@ -36,13 +36,13 @@ func ExportICS(w http.ResponseWriter, r *http.Request) {
 
 	cal := ical.NewBasicVCalendar()
 	// PRODID must comply with RFC5545
-	cal.PRODID = fmt.Sprintf("Lucky Llama Ltd: TimeOff v%s", version)
+	cal.PRODID = fmt.Sprintf("Lucky Llama Ltd: LeaveDiary v%s", version)
 	cal.X_WR_TIMEZONE = user.TZLocation().String()
 	cal.X_WR_CALNAME = fmt.Sprintf("Time off for %s", user.Name)
 
 	for _, e := range requests {
 		v := &ical.VEvent{
-			UID:     "TimeOff-" + strconv.FormatUint(e.ID, 10),
+			UID:     "LeaveDiary-" + strconv.FormatUint(e.ID, 10),
 			DTSTAMP: e.UpdatedAt,
 			DTSTART: e.StartTime,
 			DTEND:   e.EndTime,
@@ -52,7 +52,7 @@ func ExportICS(w http.ResponseWriter, r *http.Request) {
 		cal.VComponent = append(cal.VComponent, v)
 	}
 
-	w.Header().Set("Content-Disposition", "attachment; filename=\"timeoff.ics\"")
+	w.Header().Set("Content-Disposition", "attachment; filename=\"leavediary.ics\"")
 	w.Header().Set("Content-Type", "text/calendar")
 	cal.Encode(w)
 }

@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/mattbostock/timeoff",
+	"ImportPath": "github.com/mattbostock/leavediary",
 	"GoVersion": "go1.4.2",
 	"Deps": [
 		{

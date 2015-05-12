@@ -18,10 +18,10 @@ import (
 	"github.com/bradfitz/http2"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/securecookie"
-	"github.com/mattbostock/timeoff/handler"
-	"github.com/mattbostock/timeoff/middleware/negroni_logrus"
-	"github.com/mattbostock/timeoff/middleware/sessions"
-	"github.com/mattbostock/timeoff/model"
+	"github.com/mattbostock/leavediary/handler"
+	"github.com/mattbostock/leavediary/middleware/negroni_logrus"
+	"github.com/mattbostock/leavediary/middleware/sessions"
+	"github.com/mattbostock/leavediary/model"
 	"github.com/unrolled/secure"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
@@ -30,7 +30,7 @@ import (
 const (
 	assetsPath  = "assets"
 	defaultAddr = "localhost:3000"
-	sessionName = "timeoff_session"
+	sessionName = "leavediary_session"
 )
 
 var (
@@ -203,6 +203,6 @@ const (
 		"GITHUB_CLIENT_SECRET environment variables."
 
 	errNoTLSCertificate = "No TLS certficiate supplied. Consider setting TLS_CERT " +
-		"and TLS_KEY environment variables to enable TLS. TimeOff will not work unless you " +
+		"and TLS_KEY environment variables to enable TLS. LeaveDiary will not work unless you " +
 		"are using TLS upstream."
 )

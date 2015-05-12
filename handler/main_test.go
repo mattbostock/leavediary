@@ -9,9 +9,9 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/securecookie"
-	"github.com/mattbostock/timeoff/handler/mocks/logrus"
-	"github.com/mattbostock/timeoff/middleware/sessions"
-	"github.com/mattbostock/timeoff/model"
+	"github.com/mattbostock/leavediary/handler/mocks/logrus"
+	"github.com/mattbostock/leavediary/middleware/sessions"
+	"github.com/mattbostock/leavediary/model"
 	"github.com/stretchr/testify/suite"
 	"golang.org/x/oauth2"
 )

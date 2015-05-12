@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/mattbostock/timeoff/middleware/sessions"
+	"github.com/mattbostock/leavediary/middleware/sessions"
 	"github.com/unrolled/render"
 	"golang.org/x/oauth2"
 )

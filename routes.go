@@ -4,7 +4,7 @@ import (
 	_ "expvar"
 	"net/http"
 
-	"github.com/mattbostock/timeoff/handler"
+	"github.com/mattbostock/leavediary/handler"
 )
 
 func registerRoutes() {

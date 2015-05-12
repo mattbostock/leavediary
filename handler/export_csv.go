@@ -39,7 +39,7 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.Header().Set("Content-Disposition", "attachment; filename=\"timeoff.csv\"")
+	w.Header().Set("Content-Disposition", "attachment; filename=\"leavediary.csv\"")
 	w.Header().Set("Content-Type", "text/csv")
 	csv.Flush()
 }

@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/mattbostock/timeoff/model"
+	"github.com/mattbostock/leavediary/model"
 )
 
 func Dashboard(w http.ResponseWriter, r *http.Request) {

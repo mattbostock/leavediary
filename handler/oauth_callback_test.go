@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/mattbostock/timeoff/model"
+	"github.com/mattbostock/leavediary/model"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/oauth2"
 )

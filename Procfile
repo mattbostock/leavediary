@@ -1,1 +1,1 @@
-web: ADDR=:${PORT} timeoff
+web: ADDR=:${PORT} leavediary

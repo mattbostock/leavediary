@@ -6,7 +6,7 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/securecookie"
-	"github.com/mattbostock/timeoff/model"
+	"github.com/mattbostock/leavediary/model"
 	"github.com/nbio/httpcontext"
 )
 

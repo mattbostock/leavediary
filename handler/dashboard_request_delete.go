@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/mattbostock/timeoff/model"
+	"github.com/mattbostock/leavediary/model"
 )
 
 func DashboardRequestDelete(w http.ResponseWriter, r *http.Request) {

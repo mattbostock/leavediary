@@ -1,21 +1,21 @@
-[![Build Status](https://travis-ci.org/mattbostock/timeoff.svg?branch=master)](https://travis-ci.org/mattbostock/timeoff)
-[![Go Report Card](http://goreportcard.com/badge/mattbostock/timeoff)](http://goreportcard.com/report/mattbostock/timeoff)
+[![Build Status](https://travis-ci.org/mattbostock/leavediary.svg?branch=master)](https://travis-ci.org/mattbostock/leavediary)
+[![Go Report Card](http://goreportcard.com/badge/mattbostock/leavediary)](http://goreportcard.com/report/mattbostock/leavediary)
 
-# TimeOff
+# LeaveDiary
 
-TimeOff is a web application for tracking a worker's annual leave (vacation and public holidays),
+LeaveDiary is a web application for tracking a worker's annual leave (vacation and public holidays),
 sickness and time in lieu.
 
 ## Project status
 
-TimeOff is __currently incomplete and alpha-quality__ software. Not yet recommended for serious use.
+LeaveDiary is __currently incomplete and alpha-quality__ software. Not yet recommended for serious use.
 
 ## Requirements
 
 ### TLS
 
 The application can be run with TLS support turned off but, due to the way
-TimeOff configures cookies with the `Secure` flag, the application must be
+LeaveDiary configures cookies with the `Secure` flag, the application must be
 frontend by a server providing TLS termination.
 
 ## HTTP/2
@@ -41,7 +41,7 @@ For a development environment:
     # Run the application with debug logging enabled
     # Replace the GitHub client ID and secret with your own:
     # https://github.com/settings/applications
-    DEBUG=1 ADDR=localhost:3000 TLS_CERT=cert.pem TLS_KEY=key.pem GITHUB_CLIENT_ID=abc GITHUB_CLIENT_SECRET=xyz ./timeoff
+    DEBUG=1 ADDR=localhost:3000 TLS_CERT=cert.pem TLS_KEY=key.pem GITHUB_CLIENT_ID=abc GITHUB_CLIENT_SECRET=xyz ./leavediary
 
 ## Roadmap
 
