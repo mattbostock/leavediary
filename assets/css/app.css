@@ -50,6 +50,10 @@ table tr td {
   text-decoration: underline;
 }
 
+.alert-box {
+  font-size: 1rem;
+}
+
 .button {
   margin-top: 1rem;
 }
