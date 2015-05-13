@@ -10,7 +10,7 @@ import (
 	"github.com/mattbostock/leavediary/model"
 )
 
-func Allowance(w http.ResponseWriter, r *http.Request) {
+func AllowanceEdit(w http.ResponseWriter, r *http.Request) {
 	var (
 		allowanceID uint64
 		formValues  url.Values
@@ -108,7 +108,7 @@ func Allowance(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	output.HTML(w, http.StatusOK, "dashboard_allowance",
+	output.HTML(w, http.StatusOK, "allowance_edit",
 		&struct {
 			ID         uint64
 			FormValues url.Values

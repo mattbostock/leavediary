@@ -10,7 +10,7 @@ import (
 	"github.com/mattbostock/leavediary/model"
 )
 
-func Request(w http.ResponseWriter, r *http.Request) {
+func RequestEdit(w http.ResponseWriter, r *http.Request) {
 	var (
 		requestID  uint64
 		formValues url.Values
@@ -117,7 +117,7 @@ func Request(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	output.HTML(w, http.StatusOK, "request",
+	output.HTML(w, http.StatusOK, "request_edit",
 		&struct {
 			ID         uint64
 			FormValues url.Values
