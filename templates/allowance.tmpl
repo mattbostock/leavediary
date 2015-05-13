@@ -1,0 +1,31 @@
+<div class="row">
+<div class="large-12 columns">
+  <a href="/allowance/new" class="context-action">Define new leave year</a>
+</div>
+</div>
+
+<div class="row">
+<div class="large-12 columns">
+{{ if len .LeavePeriods }}
+  <table role="grid">
+    <caption>Leave years</caption>
+    <tr>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>Description</th>
+      <th>Days allowed</th>
+    </tr>
+    {{ range $r := .LeavePeriods }}
+    <tr>
+      <td class="start-date">{{ $r.StartTime | shortDate }} <span class="day-of-week">{{ $r.StartTime | dayOfWeek }}</span></td>
+      <td class="end-date">{{ $r.EndTime | shortDate }} <span class="day-of-week">{{ $r.EndTime | dayOfWeek }}</span></td>
+      <td class="description"><a href="/allowance/{{ $r.ID }}">Annual leave</a></td>
+      <td class="days">{{ minsToDays $r.Minutes }}</td>
+    </tr>
+    {{ end }}
+  </table>
+{{ else }}
+  <p class="panel">No leave years defined</p>
+{{ end }}
+</div>
+</div>
