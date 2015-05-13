@@ -19,7 +19,7 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 
 	if len(user.Jobs) == 0 {
 		log.Infoln("No jobs defined")
-		http.Redirect(w, r, "/dashboard/settings", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/settings", http.StatusTemporaryRedirect)
 		return
 	}
 
@@ -31,7 +31,7 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 	}
 	if currentLeaveAllowance.ID == 0 {
 		log.Infoln("No current leave allowance")
-		http.Redirect(w, r, "/dashboard/settings", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/settings", http.StatusTemporaryRedirect)
 		return
 	}
 

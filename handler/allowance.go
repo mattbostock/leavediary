@@ -10,7 +10,7 @@ import (
 	"github.com/mattbostock/leavediary/model"
 )
 
-func DashboardAllowance(w http.ResponseWriter, r *http.Request) {
+func Allowance(w http.ResponseWriter, r *http.Request) {
 	var (
 		allowanceID uint64
 		formValues  url.Values

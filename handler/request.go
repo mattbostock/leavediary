@@ -10,7 +10,7 @@ import (
 	"github.com/mattbostock/leavediary/model"
 )
 
-func DashboardRequest(w http.ResponseWriter, r *http.Request) {
+func Request(w http.ResponseWriter, r *http.Request) {
 	var (
 		requestID  uint64
 		formValues url.Values
@@ -117,7 +117,7 @@ func DashboardRequest(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	output.HTML(w, http.StatusOK, "dashboard_request",
+	output.HTML(w, http.StatusOK, "request",
 		&struct {
 			ID         uint64
 			FormValues url.Values

@@ -7,7 +7,7 @@ import (
 	"github.com/mattbostock/leavediary/model"
 )
 
-func DashboardRequestDelete(w http.ResponseWriter, r *http.Request) {
+func AllowanceDelete(w http.ResponseWriter, r *http.Request) {
 	user := currentUser(r)
 
 	if user.ID == 0 { // no current user; not logged in
@@ -16,7 +16,7 @@ func DashboardRequestDelete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	id, _ := strconv.ParseUint(r.URL.Query().Get(":id"), 10, 64)
-	err := model.DeleteLeaveRequest(id)
+	err := model.DeleteLeaveAllowance(id)
 	if err != nil {
 		internalError(w, err)
 		return

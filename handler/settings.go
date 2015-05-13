@@ -12,7 +12,7 @@ import (
 	"github.com/mattbostock/leavediary/model"
 )
 
-func DashboardSettings(w http.ResponseWriter, r *http.Request) {
+func Settings(w http.ResponseWriter, r *http.Request) {
 	var formValues url.Values
 	user := currentUser(r)
 
@@ -110,7 +110,7 @@ func DashboardSettings(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	output.HTML(w, http.StatusOK, "dashboard_settings",
+	output.HTML(w, http.StatusOK, "settings",
 		&struct {
 			FormValues url.Values
 			JobID      uint64

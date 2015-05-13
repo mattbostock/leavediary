@@ -2,7 +2,7 @@
 <div class="large-6 columns">
   <p class="days-remaining panel callout" data-equalizer-watch>
     <span class="allowance-dates">
-      <a href="/dashboard/allowance/{{ .CurrentLeaveAllowance.ID }}">
+      <a href="/allowance/{{ .CurrentLeaveAllowance.ID }}">
       {{ .CurrentLeaveAllowance.StartTime | shortDate }} &mdash;
       {{ .CurrentLeaveAllowance.EndTime | shortDate }}
       </a>
@@ -46,9 +46,9 @@
 <div class="row">
 <div class="large-12 columns">
 {{ if not .NextOnLeave.StartTime.IsZero }}
-  <h3>You're next on leave on: <a href="/dashboard/request/{{ .NextOnLeave.ID }}"><span class="day-of-week">{{ .NextOnLeave.StartTime | dayOfWeek }}</span> {{ .NextOnLeave.StartTime | shortDate}}</a></h3>
+  <h3>You're next on leave on: <a href="/request/{{ .NextOnLeave.ID }}"><span class="day-of-week">{{ .NextOnLeave.StartTime | dayOfWeek }}</span> {{ .NextOnLeave.StartTime | shortDate}}</a></h3>
 {{ end }}
-  <a href="/dashboard/request/new" class="context-action">Request time off</a>
+  <a href="/request/new" class="context-action">Request time off</a>
 </div>
 </div>
 
@@ -67,7 +67,7 @@
     <tr>
       <td class="start-date">{{ $r.StartTime | shortDate }} <span class="day-of-week">{{ $r.StartTime | dayOfWeek }}</span></td>
       <td class="end-date">{{ $r.EndTime | shortDate }} <span class="day-of-week">{{ $r.EndTime | dayOfWeek }}</span></td>
-      <td class="description"><a href="/dashboard/request/{{ $r.ID }}">{{ $r.Description }}</a></td>
+      <td class="description"><a href="/request/{{ $r.ID }}">{{ $r.Description }}</a></td>
       <td class="days">{{ uMinsToDays $r.Minutes }}</td>
     </tr>
     {{end}}
@@ -94,7 +94,7 @@
     <tr>
       <td class="start-date">{{ $r.StartTime | shortDate }} <span class="day-of-week">{{ $r.StartTime | dayOfWeek }}</span></td>
       <td class="end-date">{{ $r.EndTime | shortDate }} <span class="day-of-week">{{ $r.EndTime | dayOfWeek }}</span></td>
-      <td class="description"><a href="/dashboard/request/{{ $r.ID }}">{{ $r.Description }}</a></td>
+      <td class="description"><a href="/request/{{ $r.ID }}">{{ $r.Description }}</a></td>
       <td class="days">{{ uMinsToDays $r.Minutes }}</td>
     </tr>
     {{end}}
