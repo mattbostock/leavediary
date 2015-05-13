@@ -50,6 +50,10 @@ table tr td {
   text-decoration: underline;
 }
 
+.button {
+  margin-top: 1rem;
+}
+
 .context-action {
   display: inline-block;
   font-size: 1.4rem;
