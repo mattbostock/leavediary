@@ -202,7 +202,7 @@ func (l *LeaveAllowance) allottedTime() (minutes int32, err error) {
 	}
 
 	err = db.Table("leave_allowances").
-		Select("TOTAL(minutes)").
+		Select("COALESCE(SUM(minutes),0)").
 		Where("is_adjustment = ? AND start_time = ? AND end_time = ? AND job_id = ?", true, l.StartTime, l.EndTime, l.JobID).
 		Where("deleted_at IS NULL OR deleted_at <= '0001-01-02'").
 		Row().Scan(&minutes)
@@ -224,7 +224,7 @@ func (l *LeaveAllowance) usedTime() (minutes int32, err error) {
 
 	// Assumes leave doesn't span allocated periods
 	err = db.Table("leave_requests").
-		Select("TOTAL(minutes)").
+		Select("COALESCE(SUM(minutes),0)").
 		Where("job_id = ? AND start_time >= ? AND end_time <= ?", l.JobID, l.StartTime, l.EndTime).
 		Where("deleted_at IS NULL OR deleted_at <= '0001-01-02'").
 		Row().Scan(&minutes)
