@@ -129,6 +129,11 @@ func (u *User) UpdateOrCreate() error {
 	return res.Error
 }
 
+func (j *Job) Save() error {
+	res := db.Save(j)
+	return res.Error
+}
+
 func (j *Job) CurrentLeaveAllowance() (l LeaveAllowance, _ error) {
 	// FIXME See if there's a neater way to eagerly load user data (aside from user ID)
 	if err := db.Model(&j).Related(&j.User).Error; err != nil {

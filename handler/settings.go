@@ -32,14 +32,8 @@ func Settings(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "POST" {
 		formValues = r.PostForm
-		employerName := r.PostFormValue("employer_name")
-		// FIXME handle updating existing settings
-		daysPerYear, err := strconv.ParseFloat(r.PostFormValue("days_per_year"), 32)
-		if err != nil {
-			internalError(w, err)
-			return
-		}
 
+		employerName := r.PostFormValue("employer_name")
 		jobStart, err := time.ParseInLocation("2006-1-2",
 			fmt.Sprintf("%s-%s-%s",
 				r.PostFormValue("job_start_year"),
@@ -53,57 +47,68 @@ func Settings(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		leaveYearStart, err := time.ParseInLocation("2006-1-2",
-			fmt.Sprintf("%s-%s-%s",
-				r.PostFormValue("leave_start_year"),
-				r.PostFormValue("leave_start_month"),
-				r.PostFormValue("leave_start_day"),
-			),
-			user.TZLocation())
-		leaveYearEnd := leaveYearStart.AddDate(1, 0, -1)
+		job.EmployerName = employerName
+		job.StartTime = jobStart
 
-		if err != nil {
-			internalError(w, err)
-			return
-		}
-
-		userNow := time.Now().In(user.TZLocation())
-		if userNow.After(leaveYearEnd) || userNow.Before(leaveYearStart) {
-			showError(w, http.StatusNotAcceptable, "Current leave year must not end before or start after today's date.")
-			return
-		}
-
-		var charPool = []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-		exportSecret := make([]byte, 64)
-
-		for i := range exportSecret {
-			n, err := rand.Int(rand.Reader, big.NewInt(int64(len(charPool))))
+		if job.ID > 0 {
+			if err = job.Save(); err != nil {
+				internalError(w, err)
+				return
+			}
+		} else {
+			daysPerYear, err := strconv.ParseFloat(r.PostFormValue("days_per_year"), 32)
 			if err != nil {
 				internalError(w, err)
 				return
 			}
-			exportSecret[i] = charPool[n.Int64()]
-		}
 
-		j := model.Job{
-			EmployerName: employerName,
-			ExportSecret: string(exportSecret),
-			StartTime:    jobStart,
-		}
+			leaveYearStart, err := time.ParseInLocation("2006-1-2",
+				fmt.Sprintf("%s-%s-%s",
+					r.PostFormValue("leave_start_year"),
+					r.PostFormValue("leave_start_month"),
+					r.PostFormValue("leave_start_day"),
+				),
+				user.TZLocation())
+			leaveYearEnd := leaveYearStart.AddDate(1, 0, -1)
 
-		j.LeaveAllowances = append(j.LeaveAllowances, model.LeaveAllowance{
-			Minutes:      int32(daysPerYear * 24 * 60),
-			Description:  "Annual leave allocation",
-			StartTime:    leaveYearStart,
-			EndTime:      leaveYearEnd,
-			IsAdjustment: false,
-		})
+			if err != nil {
+				internalError(w, err)
+				return
+			}
 
-		user.Jobs = append(user.Jobs, j)
-		err = user.Save()
-		if err != nil {
-			internalError(w, err)
-			return
+			userNow := time.Now().In(user.TZLocation())
+			if userNow.After(leaveYearEnd) || userNow.Before(leaveYearStart) {
+				showError(w, http.StatusNotAcceptable, "Current leave year must not end before or start after today's date.")
+				return
+			}
+
+			var charPool = []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+			exportSecret := make([]byte, 64)
+
+			for i := range exportSecret {
+				n, err := rand.Int(rand.Reader, big.NewInt(int64(len(charPool))))
+				if err != nil {
+					internalError(w, err)
+					return
+				}
+				exportSecret[i] = charPool[n.Int64()]
+			}
+			job.ExportSecret = string(exportSecret)
+
+			job.LeaveAllowances = append(job.LeaveAllowances, model.LeaveAllowance{
+				Minutes:      int32(daysPerYear * 24 * 60),
+				Description:  "Annual leave allocation",
+				StartTime:    leaveYearStart,
+				EndTime:      leaveYearEnd,
+				IsAdjustment: false,
+			})
+
+			user.Jobs = append(user.Jobs, job)
+			if err = user.Save(); err != nil {
+				internalError(w, err)
+				return
+			}
+
 		}
 
 		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
