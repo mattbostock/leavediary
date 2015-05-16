@@ -33,7 +33,7 @@ func init() {
 			return t.Format("Monday")
 		},
 		"uMinsToDays": func(minutes uint32) float32 {
-			return float32(minutes) / 60 / 24
+			return float32(roundPlaces(float64(minutes)/60/24, 2))
 		},
 		"minsToDays": func(minutes int32) float32 {
 			return float32(roundPlaces(float64(minutes)/60/24, 2))

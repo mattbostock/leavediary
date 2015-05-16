@@ -7,7 +7,7 @@
       {{ .CurrentLeaveAllowance.EndTime | shortDate }}
       </a>
     </span>
-    <span class="statistic">{{ .RemainingDays }} days</span>
+    <span class="statistic">{{ .RemainingMinutes | minsToDays }} days</span>
     <span class="description">remaining</span>
   </p>
 </div>

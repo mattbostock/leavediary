@@ -40,7 +40,6 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 		internalError(w, err)
 		return
 	}
-	remainingDays := float32(remainingMinutes) / 60 / 24
 
 	var nextOnLeave model.LeaveRequest
 	var pastRequests, upcomingRequests []model.LeaveRequest
@@ -82,7 +81,7 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 		NextOnLeave           model.LeaveRequest
 		PastRequests          []model.LeaveRequest
 		UpcomingRequests      []model.LeaveRequest
-		RemainingDays         float32
+		RemainingMinutes      int32
 		User                  model.User
 		WebCalURLNoScheme     *url.URL
 	}{
@@ -91,7 +90,7 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 		nextOnLeave,
 		pastRequests,
 		upcomingRequests,
-		remainingDays,
+		remainingMinutes,
 		user,
 		webCalURLNoScheme,
 	})
