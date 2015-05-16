@@ -69,7 +69,7 @@ func Settings(w http.ResponseWriter, r *http.Request) {
 					r.PostFormValue("leave_start_day"),
 				),
 				user.TZLocation())
-			leaveYearEnd := leaveYearStart.AddDate(1, 0, -1)
+			leaveYearEnd := leaveYearStart.AddDate(1, 0, 0)
 
 			if err != nil {
 				internalError(w, err)
