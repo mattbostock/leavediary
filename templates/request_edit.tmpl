@@ -30,7 +30,7 @@
     <div class="row">
     <div class="large-4 columns">
       <label>Leave end date</label>
-      <input class="day" type="number" pattern="\d*" min="01" max="31" placeholder="DD" name="leave_end_day" value="{{ urlValue .FormValues "leave_end_month" }}" required>
+      <input class="day" type="number" pattern="\d*" min="01" max="31" placeholder="DD" name="leave_end_day" value="{{ urlValue .FormValues "leave_end_day" }}" required>
       <input class="month" type="number" pattern="\d*" min="01" max="12" placeholder="MM" name="leave_end_month" value="{{ urlValue .FormValues "leave_end_month" }}" required>
       <input class="year" type="number" pattern="\d*" min="1000" max="9999" placeholder="YYYY" name="leave_end_year" value="{{ urlValue .FormValues "leave_end_year" }}" required>
     </div>
