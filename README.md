@@ -25,9 +25,6 @@ Other browsers will continue to use HTTP/1.1.
 
 ## Getting started
 
-The application supports Docker for deployment to Production using the
-provided `Dockerfile`.
-
 For a development environment:
 
     # Ensure you have Go 1.4 installed
