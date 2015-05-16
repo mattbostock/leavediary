@@ -25,9 +25,8 @@ Other browsers will continue to use HTTP/1.1.
 
 ## Getting started
 
-The application supports Heroku and Docker for deployment to Production using the
-provided `Procfile` and `Dockerfile` respectively. For deployment to Heroku, use
-the [Go build pack](https://github.com/kr/heroku-buildpack-go).
+The application supports Docker for deployment to Production using the
+provided `Dockerfile`.
 
 For a development environment:
 
