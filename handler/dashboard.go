@@ -31,7 +31,7 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 	}
 	if currentLeaveAllowance.ID == 0 {
 		log.Infoln("No current leave allowance")
-		http.Redirect(w, r, "/settings", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/allowance", http.StatusTemporaryRedirect)
 		return
 	}
 
