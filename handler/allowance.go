@@ -15,6 +15,11 @@ func Allowance(w http.ResponseWriter, r *http.Request) {
 	}
 
 	job := user.CurrentJob()
+	if job.ID == 0 { // no job
+		log.Infoln("No jobs defined")
+		http.Redirect(w, r, "/settings", http.StatusTemporaryRedirect)
+		return
+	}
 
 	leavePeriods, err := job.LeavePeriods()
 	if err != nil {
