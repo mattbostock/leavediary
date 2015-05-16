@@ -62,7 +62,7 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(upcomingRequests) > 0 {
-		nextOnLeave = upcomingRequests[0]
+		nextOnLeave = upcomingRequests[len(upcomingRequests)-1]
 	}
 
 	calendarURL := &url.URL{
