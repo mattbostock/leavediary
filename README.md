@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/mattbostock/leavediary.png?label=ready&title=Ready)](https://waffle.io/mattbostock/leavediary)
 [![Build Status](https://travis-ci.org/mattbostock/leavediary.svg?branch=master)](https://travis-ci.org/mattbostock/leavediary)
 [![Go Report Card](http://goreportcard.com/badge/mattbostock/leavediary)](http://goreportcard.com/report/mattbostock/leavediary)
 
