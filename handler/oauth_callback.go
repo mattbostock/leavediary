@@ -48,8 +48,13 @@ func GithubOauthCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	u := &model.User{
-		Name:     *user.Name,
 		GitHubID: uint64(*user.ID),
+	}
+
+	if user.Name != nil {
+		u.Name = *user.Name
+	} else {
+		u.Name = *user.Login
 	}
 
 	emails, _, err := githubClient.Users.ListEmails(nil)
