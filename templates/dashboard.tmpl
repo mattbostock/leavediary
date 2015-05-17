@@ -21,9 +21,6 @@
     <div id="calendar-modal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
       <h2 id="modalTitle">Add to your calendar</h2>
       <ul role="navigation" class="action-list">
-        <li role="menuitem"><a href="webcal:{{ .WebCalURLNoScheme }}">Apple Calendar</a></li>
-        <li role="menuitem"><a href="webcal:{{ .WebCalURLNoScheme }}">Outlook</a></li>
-        <li role="menuitem"><a href="https://www.google.com/calendar/render?cid={{ .CalendarURL }}">Google Calendar</a></li>
         <li role="menuitem"><a href="{{ .CalendarURL }}">Download .ics file</a></li>
       </ul>
 

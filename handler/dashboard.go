@@ -71,10 +71,6 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 		Path:   fmt.Sprintf("/export/ics/%s", job.ExportSecret),
 	}
 
-	webCalURLNoScheme := &url.URL{}
-	*webCalURLNoScheme = *calendarURL
-	webCalURLNoScheme.Scheme = ""
-
 	output.HTML(w, http.StatusOK, "dashboard", &struct {
 		CurrentLeaveAllowance model.LeaveAllowance
 		CalendarURL           *url.URL
@@ -83,7 +79,6 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 		UpcomingRequests      []model.LeaveRequest
 		RemainingMinutes      int32
 		User                  model.User
-		WebCalURLNoScheme     *url.URL
 	}{
 		currentLeaveAllowance,
 		calendarURL,
@@ -92,6 +87,5 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 		upcomingRequests,
 		remainingMinutes,
 		user,
-		webCalURLNoScheme,
 	})
 }
