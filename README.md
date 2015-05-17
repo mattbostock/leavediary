@@ -10,6 +10,12 @@ LeaveDiary is a web application for tracking a annual leave (vacation or holiday
 
 LeaveDiary is currently in alpha.
 
+## Demo
+
+You can try the application here:
+
+https://leavediary.herokuapp.com/
+
 ## Roadmap
 
 See the [Milestones](https://github.com/mattbostock/leavediary/milestones) and
