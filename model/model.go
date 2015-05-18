@@ -172,7 +172,8 @@ func (j *Job) RequestsLastYearAndFuture() (requests []LeaveRequest, err error) {
 
 	yearAgo := time.Now().AddDate(-1, 0, 0).In(j.User.TZLocation())
 	err = db.Order("start_time DESC").Order("end_time DESC").
-		Find(&requests).Where("end_time >= ? AND job_id = ?", yearAgo, j.ID).Error
+		Where("end_time >= ? AND job_id = ?", yearAgo, j.ID).
+		Find(&requests).Error
 
 	return requests, err
 }
