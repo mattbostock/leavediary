@@ -23,8 +23,10 @@ func RequestEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	job := user.CurrentJob()
+
 	if requestID, _ = strconv.ParseUint(r.URL.Query().Get(":id"), 10, 64); requestID > 0 {
-		leaveRequest, err := model.FindLeaveRequest(requestID)
+		leaveRequest, err := model.FindLeaveRequest(requestID, job.ID)
 		if err != nil {
 			internalError(w, err)
 			return

@@ -66,23 +66,23 @@ type User struct {
 	DeletedAt time.Time
 }
 
-func FindLeaveAllowance(id uint64) (l LeaveAllowance, err error) {
-	res := db.First(&l, id)
+func FindLeaveAllowance(id, jobID uint64) (l LeaveAllowance, err error) {
+	res := db.Where("job_id = ?", jobID).First(&l, id)
 	return l, res.Error
 }
 
-func FindLeaveRequest(id uint64) (l LeaveRequest, err error) {
-	res := db.First(&l, id)
+func FindLeaveRequest(id, jobID uint64) (l LeaveRequest, err error) {
+	res := db.Where("job_id = ?", jobID).First(&l, id)
 	return l, res.Error
 }
 
-func DeleteLeaveAllowance(id uint64) (err error) {
-	err = db.Where("id = ?", id).Delete(&LeaveAllowance{}).Error
+func DeleteLeaveAllowance(id, jobID uint64) (err error) {
+	err = db.Where("id = ?", id).Where("job_id = ?", jobID).Delete(&LeaveAllowance{}).Error
 	return err
 }
 
-func DeleteLeaveRequest(id uint64) (err error) {
-	err = db.Where("id = ?", id).Delete(&LeaveRequest{}).Error
+func DeleteLeaveRequest(id, jobID uint64) (err error) {
+	err = db.Where("id = ?", id).Where("job_id = ?", jobID).Delete(&LeaveRequest{}).Error
 	return err
 }
 

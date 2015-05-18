@@ -23,8 +23,10 @@ func AllowanceEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	job := user.CurrentJob()
+
 	if allowanceID, _ = strconv.ParseUint(r.URL.Query().Get(":id"), 10, 64); allowanceID > 0 {
-		leaveAllowance, err := model.FindLeaveAllowance(allowanceID)
+		leaveAllowance, err := model.FindLeaveAllowance(allowanceID, job.ID)
 		if err != nil {
 			internalError(w, err)
 			return

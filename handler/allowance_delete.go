@@ -15,8 +15,10 @@ func AllowanceDelete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	job := user.CurrentJob()
+
 	id, _ := strconv.ParseUint(r.URL.Query().Get(":id"), 10, 64)
-	err := model.DeleteLeaveAllowance(id)
+	err := model.DeleteLeaveAllowance(id, job.ID)
 	if err != nil {
 		internalError(w, err)
 		return
