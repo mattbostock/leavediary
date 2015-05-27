@@ -40,13 +40,10 @@ Other browsers will continue to use HTTP/1.1.
 For a development environment:
 
     # Ensure you have Go 1.4 installed
-    godep go get -t -v ./...
-    godep go build
-
-    # Generate TLS certificates for development use only
-    go run $GOROOT/src/crypto/tls/generate_cert.go -host localhost
+    make
 
     # Run the application with debug logging enabled
     # Replace the GitHub client ID and secret with your own:
     # https://github.com/settings/applications
-    DEBUG=1 ADDR=localhost:3000 TLS_CERT=cert.pem TLS_KEY=key.pem GITHUB_CLIENT_ID=abc GITHUB_CLIENT_SECRET=xyz ./leavediary
+    DEBUG=1 ADDR=localhost:3000 TLS_CERT=test_fixtures/cert.pem TLS_KEY=test_fixtures/key.pem \
+      GITHUB_CLIENT_ID=abc GITHUB_CLIENT_SECRET=xyz ./leavediary
