@@ -72,7 +72,7 @@
 		},
 		{
 			"ImportPath": "github.com/soh335/ical",
-			"Rev": "9e3fbc2c77081d0ef018279ab30b00c89d417ece"
+			"Rev": "50e48f3ed299fb2a2b9e232f87684ac22153a139"
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",

@@ -48,6 +48,8 @@ func ExportICS(w http.ResponseWriter, r *http.Request) {
 			DTEND:   e.EndTime,
 			SUMMARY: user.Name + " annual leave: " + e.Description,
 			TZID:    e.StartTime.Location().String(),
+
+			AllDay: true, // FIXME Once part-day leave is supported
 		}
 		cal.VComponent = append(cal.VComponent, v)
 	}
