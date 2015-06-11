@@ -22,8 +22,10 @@ func Settings(w http.ResponseWriter, r *http.Request) {
 	}
 
 	job := user.CurrentJob()
+	formValues = make(url.Values)
+	formValues.Add("name", user.Name)
+
 	if job.ID > 0 {
-		formValues = make(url.Values)
 		formValues.Add("employer_name", job.EmployerName)
 		formValues.Add("job_start_year", job.StartTime.Format("2006"))
 		formValues.Add("job_start_month", job.StartTime.Format("1"))
@@ -33,6 +35,7 @@ func Settings(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		formValues = r.PostForm
 
+		name := r.PostFormValue("name")
 		employerName := r.PostFormValue("employer_name")
 		jobStart, err := time.ParseInLocation("2006-1-2",
 			fmt.Sprintf("%s-%s-%s",
@@ -47,6 +50,7 @@ func Settings(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		user.Name = name
 		job.EmployerName = employerName
 		job.StartTime = jobStart
 
@@ -104,11 +108,12 @@ func Settings(w http.ResponseWriter, r *http.Request) {
 			})
 
 			user.Jobs = append(user.Jobs, job)
-			if err = user.Save(); err != nil {
-				internalError(w, err)
-				return
-			}
 
+		}
+
+		if err = user.Save(); err != nil {
+			internalError(w, err)
+			return
 		}
 
 		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)

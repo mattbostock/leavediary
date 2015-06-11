@@ -5,6 +5,13 @@
 
     <div class="row">
     <div class="large-4 columns">
+      <label for="name">Your name</label>
+      <input type="text" name="name" value="{{ urlValue .FormValues "name" }}" required>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="large-4 columns">
       <label for="employer_name">What is the name of your employer?</label>
       <input type="text" name="employer_name" value="{{ urlValue .FormValues "employer_name" }}" required>
     </div>
