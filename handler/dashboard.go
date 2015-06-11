@@ -56,7 +56,7 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	for _, req := range requests {
-		if req.After(time.Now().AddDate(0, 0, -1).In(user.TZLocation())) {
+		if req.After(time.Now().In(user.TZLocation())) {
 			upcomingRequests = append(upcomingRequests, req)
 		}
 	}
