@@ -20,6 +20,7 @@ import (
 	"github.com/gorilla/securecookie"
 	"github.com/mattbostock/leavediary/handler"
 	"github.com/mattbostock/leavediary/middleware/negroni_logrus"
+	"github.com/mattbostock/leavediary/middleware/recovery"
 	"github.com/mattbostock/leavediary/middleware/sessions"
 	"github.com/mattbostock/leavediary/model"
 	"github.com/unrolled/secure"
@@ -149,7 +150,7 @@ func main() {
 
 	n := negroni.New()
 	n.Use(negroniLogrus.New(log)) // logger must be first middleware
-	n.Use(negroni.NewRecovery())
+	n.Use(recovery.New(log))
 	n.Use(negroni.HandlerFunc(secureMiddleware.HandlerFuncWithNext))
 	n.Use(negroni.NewStatic(http.Dir(assetsPath)))
 	n.UseHandler(sessionManager)
