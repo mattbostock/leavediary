@@ -82,7 +82,7 @@ func Settings(w http.ResponseWriter, r *http.Request) {
 
 			userNow := time.Now().In(user.TZLocation())
 			if userNow.After(leaveYearEnd) || userNow.Before(leaveYearStart) {
-				showError(w, http.StatusNotAcceptable, "Current leave year must not end before or start after today's date.")
+				ShowError(w, http.StatusNotAcceptable, "Current leave year must not end before or start after today's date.")
 				return
 			}
 

@@ -19,7 +19,7 @@ func internalError(w http.ResponseWriter, err error) {
 		})
 }
 
-func showError(w http.ResponseWriter, statusCode int, msg string) {
+func ShowError(w http.ResponseWriter, statusCode int, msg string) {
 	output.HTML(w, statusCode, "error",
 		&struct {
 			Msg  string
