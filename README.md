@@ -32,7 +32,7 @@ frontend by a server providing TLS termination.
 
 ## HTTP/2
 
-Timeoff supports the HTTP/2 protocol over TLS for browsers that understand it.
+LeaveDiary supports the HTTP/2 protocol over TLS for browsers that understand it.
 Other browsers will continue to use HTTP/1.1.
 
 ## Getting started
